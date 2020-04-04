@@ -10,14 +10,9 @@ import { Button } from 'antd';
 import ReactDOM from 'react-dom';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import './x.js';
+import { systemConfig } from '@/config/SystemConfig';
 
-interface ITestProps {
-  name: string;
-}
-
-const ITestState = {
-  value: 'liuwentao',
-};
+console.log(systemConfig)
 
 export default class Test extends React.Component<any, any> {
   private mergeRef: any;
@@ -73,8 +68,10 @@ export default class Test extends React.Component<any, any> {
         <Button
           type="primary"
           onClick={e => {
-            const reply = window.require("electron").ipcRenderer.sendSync('synchronous-message', 'ping')
-            console.log(reply)
+            const reply = window
+              .require('electron')
+              .ipcRenderer.sendSync('synchronous-message', 'ping');
+            console.log(reply);
             this.setState({
               show: !this.state.show,
             });
