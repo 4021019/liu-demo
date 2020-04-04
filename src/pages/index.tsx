@@ -1,4 +1,4 @@
-import Test from '@/components/Test';
+import CodeEditor from '@/components/CodeEditor';
 import { Layout } from 'antd';
 import MarkdownIt from 'markdown-it';
 import React from 'react';
@@ -12,6 +12,6 @@ export default () => {
     //       __html: md.render('# markdown-it rulezz! '),
     //  }}
     // ></div>
-    <Test name="liuwentao">123123</Test>
+    <CodeEditor name="liuwentao">123123</CodeEditor>
   );
 };

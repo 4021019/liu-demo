@@ -12,5 +12,4 @@ const t = fs.readFile(
 
 export const systemConfig = {
   homedir: os.homedir(),
-  t: t,
 };

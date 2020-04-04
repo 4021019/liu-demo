@@ -7,14 +7,9 @@ import 'codemirror/mode/clike/clike.js';
 import 'codemirror/theme/material.css';
 import React, { createRef } from 'react';
 import { Button } from 'antd';
-import ReactDOM from 'react-dom';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import './x.js';
-import { systemConfig } from '@/config/SystemConfig';
 
-console.log(systemConfig)
-
-export default class Test extends React.Component<any, any> {
+export default class CodeEditor extends React.Component<any, any> {
   private mergeRef: any;
   private merge?: cdm.MergeView.MergeViewEditor;
   constructor(props: any) {
