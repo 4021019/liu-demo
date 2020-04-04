@@ -1,0 +1,82 @@
+{
+  "name": "liu-demo",
+  "private": true,
+  "version": "0.0.1",
+  "description": "A minimal Electron application",
+  "main": "./dist/main/main.ts",
+  "build": {
+    "appId": "your.id",
+    "mac": {
+      "category": "your.app.category.develpp-tool"
+    },
+    "directories": {
+      "output": "target"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "asar": true
+  },
+  "scripts": {
+    "electron:fix": "electron-fix start",
+    "electron:start:main": "yarn run electron-webpack dev",
+    "electron:start:umi": "yarn run start",
+    "electron:build": "yarn run electron:build:umi && yarn run electron:build:main",
+    "electron:build:main": "cross-env NODE_ENV=production webpack --config ./src/main/config/webpack.main.config.js",
+    "electron:build:umi": "yarn run build",
+    "electron:package": "electron-builder .",
+    "package:mac": "yarn run electron:build && yarn run electron:package",
+    "rebuild": "electron-rebuild .",
+    "start": "umi dev",
+    "build": "umi build",
+    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "test": "umi-test",
+    "test:coverage": "umi-test --coverage"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,less,md,json}": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "prettier --parser=typescript --write"
+    ]
+  },
+  "dependencies": {
+    "@types/classnames": "^2.2.10",
+    "@types/codemirror": "^0.0.89",
+    "@types/markdown-it": "^0.0.9",
+    "classnames": "^2.2.6",
+    "codemirror": "^5.52.2",
+    "editor.md": "^1.5.0",
+    "lint-staged": "^10.0.7",
+    "lodash": "^4.17.15",
+    "markdown-it": "^10.0.0",
+    "prettier": "^1.19.1",
+    "react": "^16.12.0",
+    "react-codemirror2": "^7.1.0",
+    "react-dom": "^16.12.0",
+    "react-markdown": "^4.3.1",
+    "react-markdown-it": "^1.0.2",
+    "yorkie": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/webpack-merge": "^4.1.5",
+    "@umijs/preset-react": "1.x",
+    "@umijs/test": "^3.0.14",
+    "awesome-typescript-loader": "^5.2.1",
+    "clean-webpack-plugin": "^3.0.0",
+    "cross-env": "^7.0.2",
+    "electron": "^8.2.0",
+    "electron-builder": "^22.4.1",
+    "electron-fix": "^1.1.2",
+    "electron-webpack": "^2.7.4",
+    "source-map-support": "^0.5.16",
+    "typescript": "^3.8.3",
+    "umi": "^3.0.14",
+    "webpack-cli": "^3.3.11"
+  }
+}
