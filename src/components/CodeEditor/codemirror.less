@@ -1,9 +1,10 @@
+@import './style.less';
 /* BASICS */
 
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  height: calc(~'100vh - 100px');
+  height: @code-mirror-height;
   text-align: left;
   color: black;
   direction: ltr;

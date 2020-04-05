@@ -1,13 +1,13 @@
+@import './style.less';
+
 .CodeMirror-merge {
   position: relative;
-  // border: 1px solid #ddd;
   white-space: pre;
 }
 
 .CodeMirror-merge,
 .CodeMirror-merge .CodeMirror {
-  height: calc(~'100vh - 100px');
-  // border: 1px solid #eee;
+  height: @code-mirror-height;
 }
 
 .CodeMirror-merge-2pane .CodeMirror-merge-pane {
