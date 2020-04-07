@@ -6,8 +6,8 @@ function createWindow() {
   // 创建浏览器窗口
   console.log(path.join(__dirname, 'preload.ts'))
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1366,
+    height: 768,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, 'preload.js')
