@@ -4,7 +4,6 @@ import React from 'react';
 import { Rnd } from 'react-rnd';
 import { history } from 'umi';
 
-
 const { Header, Content, Footer, Sider } = Layout;
 
 export default class MyLayout extends React.Component<any, any> {
@@ -117,6 +116,15 @@ export default class MyLayout extends React.Component<any, any> {
               >
                 <UserOutlined />
                 <span>setting</span>
+              </Menu.Item>
+              <Menu.Item
+                key="5"
+                onClick={() => {
+                  history.push('/move');
+                }}
+              >
+                <UserOutlined />
+                <span>拖拽测试</span>
               </Menu.Item>
             </Menu>
           </Sider>
