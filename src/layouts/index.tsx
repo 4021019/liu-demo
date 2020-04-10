@@ -1,13 +1,23 @@
 import { UserOutlined } from '@ant-design/icons';
-import { Anchor, Layout, Menu, notification } from 'antd';
+import { Anchor, Layout, Menu, notification, Dropdown } from 'antd';
 import React from 'react';
 import { Rnd } from 'react-rnd';
 import { history } from 'umi';
 
 const { Header, Content, Footer, Sider } = Layout;
+const { SubMenu } = Menu;
+
+const menu = (
+  <Menu>
+    <Menu.Item key="1">1st menu item</Menu.Item>
+    <Menu.Item key="2">2nd menu item</Menu.Item>
+    <Menu.Item key="3">3rd menu item</Menu.Item>
+  </Menu>
+);
 
 export default class MyLayout extends React.Component<any, any> {
   private rnd: any;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -86,6 +96,19 @@ export default class MyLayout extends React.Component<any, any> {
             width={this.state.x1}
           >
             <Menu mode="inline" defaultSelectedKeys={['4']}>
+              <SubMenu
+                key="sub1"
+                title={
+                  <span>
+                    <UserOutlined />
+                    <span>子菜单测试</span>
+                  </span>
+                }
+              >
+                <Menu.Item key="sub1-1">Option 1</Menu.Item>
+                <Menu.Item key="sub1-2">Option 2</Menu.Item>
+              </SubMenu>
+
               <Menu.Item
                 key="1"
                 onClick={() => {
@@ -95,12 +118,7 @@ export default class MyLayout extends React.Component<any, any> {
                 <UserOutlined />
                 <span>test page</span>
               </Menu.Item>
-              <Menu.Item
-                key="2"
-                onClick={() => {
-                  history.push('/');
-                }}
-              >
+              <Menu.Item key="2">
                 <UserOutlined />
                 <span>代码编辑页面(home)</span>
               </Menu.Item>
@@ -125,6 +143,15 @@ export default class MyLayout extends React.Component<any, any> {
               >
                 <UserOutlined />
                 <span>拖拽测试</span>
+              </Menu.Item>
+              <Menu.Item
+                key="6"
+                onClick={() => {
+                  history.push('/move2');
+                }}
+              >
+                <UserOutlined />
+                <span>拖拽测试2</span>
               </Menu.Item>
             </Menu>
           </Sider>

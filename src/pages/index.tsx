@@ -1,10 +1,9 @@
 import CodeEditor from '@/components/CodeEditor';
+import PageTab from '@/components/PageTab';
 import { fs, os } from '@/config/SystemConfig.ts';
-import { Layout, Switch, Row, Col, Tabs } from 'antd';
+import { Col, Layout, Row, Switch, Tabs } from 'antd';
 import React from 'react';
-import { Rnd } from 'react-rnd';
-import { DndProvider, DragSource, DropTarget } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { PlusSquareOutlined } from '@ant-design/icons';
 
 const { Header, Sider, Content } = Layout;
 const { TabPane } = Tabs;
@@ -12,6 +11,7 @@ const d = fs.readFileSync(os.homedir() + '/test.json', 'utf-8');
 
 interface IState {
   renderMerge: boolean;
+  paneList: any;
 }
 
 export default class PageEditor extends React.Component<any, IState> {
@@ -19,8 +19,31 @@ export default class PageEditor extends React.Component<any, IState> {
     super(props);
     this.state = {
       renderMerge: false,
+      paneList: [
+        {
+          tab: 'liuwentao',
+          key: '1',
+          content: <CodeEditor value={d.toString()} renderMerge={false} />,
+        },
+        {
+          tab: 'liuwentao2',
+          key: '2',
+          content: <CodeEditor value={d.toString()} renderMerge={false} />,
+        },
+      ],
     };
   }
+
+  add = () => {
+    this.state.paneList.push({
+      tab: 'liuwentao3',
+      key: '3',
+      content: <div>123</div>,
+    });
+    this.setState({
+      paneList: this.state.paneList,
+    });
+  };
 
   onEdit = (targetKey: any, action: string) => {
     // this[action](targetKey);
@@ -41,6 +64,7 @@ export default class PageEditor extends React.Component<any, IState> {
           <Row>
             <Col span={24}>
               <div
+                className="line"
                 style={{
                   width: '40px',
                   float: 'left',
@@ -59,42 +83,24 @@ export default class PageEditor extends React.Component<any, IState> {
               >
                 <Switch size="small" defaultChecked />
               </div>
+              <div
+                className="line"
+                style={{
+                  width: '40px',
+                  float: 'left',
+                  textAlign: 'center',
+                  lineHeight: '40px',
+                  textAnchor: 'middle',
+                }}
+                onClick={this.add}
+              >
+                <PlusSquareOutlined />
+              </div>
             </Col>
           </Row>
         </Header>
         <Content>
-          <DndProvider backend={HTML5Backend}>
-            <Tabs activeKey={'1'} type="editable-card" onEdit={this.onEdit}>
-              <TabPane tab={'tableName'} key={'1'} closable={true}>
-                <CodeEditor
-                  value={d.toString()}
-                  renderMerge={this.state.renderMerge}
-                />
-              </TabPane>
-            </Tabs>
-          </DndProvider>
-          {/* <Rnd
-            className="line"
-            default={{
-              x: 0,
-              y: 0,
-              width: 320,
-              height: 200,
-            }}
-          >
-            Rnd1
-          </Rnd>
-          <Rnd
-            className="line"
-            default={{
-              x: 320,
-              y: 0,
-              width: 320,
-              height: 200,
-            }}
-          >
-            Rnd2
-          </Rnd> */}
+          <PageTab paneList={this.state.paneList} />
         </Content>
       </Layout>
     );

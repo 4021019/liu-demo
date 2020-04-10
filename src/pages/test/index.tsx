@@ -86,23 +86,25 @@ md.renderer.rules.fence = function(tokens, idx, options, env, slf) {
   );
 };
 
-console.log(md.renderer.rules);
-
 const text = '# markdown-it rulezz! \n```\n12312312\n123123\n```';
 
 export default class Test extends React.Component<any, any> {
   private editRef: any = createRef();
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   render() {
     return (
       <div>
         <Row>
           <Col span={12}>
-            <CodeEditor onScroll = {()=>{
-              console.log('123123')
-            }} ref={this.editRef} value={text} renderMerge={true} />
+            <CodeEditor
+              onScroll={() => {
+                console.log('123123');
+              }}
+              ref={this.editRef}
+              value={text}
+              renderMerge={true}
+            />
           </Col>
           <Col span={12}>
             <div

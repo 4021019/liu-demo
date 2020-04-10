@@ -1,6 +1,7 @@
 import { systemConfig, fs, path } from '@/config/SystemConfig';
 import { Divider, List } from 'antd';
 import React from 'react';
+import PageTab from '@/components/PageTab';
 
 export default () => {
   const data = new Array();
