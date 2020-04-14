@@ -3,7 +3,8 @@ import { Anchor, Layout, Menu, notification, Dropdown } from 'antd';
 import React from 'react';
 import { Rnd } from 'react-rnd';
 import { history } from 'umi';
-
+import { Result, Button } from 'antd';
+import { SmileOutlined } from '@ant-design/icons';
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -62,6 +63,27 @@ export default class MyLayout extends React.Component<any, any> {
   };
 
   render() {
+    if (this.props.location.pathname === '/') {
+      return (
+        <Result
+          style={{
+            paddingTop: '150px',
+          }}
+          icon={<SmileOutlined />}
+          title="Hello World"
+          extra={
+            <Button
+              onClick={() => {
+                history.push('/editor');
+              }}
+              type="primary"
+            >
+              Start
+            </Button>
+          }
+        />
+      );
+    }
     return (
       <Anchor>
         <Rnd
@@ -118,7 +140,12 @@ export default class MyLayout extends React.Component<any, any> {
                 <UserOutlined />
                 <span>test page</span>
               </Menu.Item>
-              <Menu.Item key="2">
+              <Menu.Item
+                key="2"
+                onClick={() => {
+                  history.push('/');
+                }}
+              >
                 <UserOutlined />
                 <span>代码编辑页面(home)</span>
               </Menu.Item>

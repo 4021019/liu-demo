@@ -17,7 +17,6 @@ export interface IndexModelType {
   };
   subscriptions: { setup: Subscription };
 }
-
 const IndexModel: IndexModelType = {
   namespace: 'index2',
 
@@ -31,6 +30,7 @@ const IndexModel: IndexModelType = {
         type: 'save',
         payload: payload,
       });
+      console.log(payload);
     },
   },
   reducers: {

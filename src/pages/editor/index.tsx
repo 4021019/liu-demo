@@ -16,7 +16,7 @@ interface IState {
   paneList: any;
 }
 
-export default class HomePage extends React.Component<any, IState> {
+export default class PageEditor extends React.Component<any, IState> {
   constructor(props: any) {
     super(props);
     this.state = {
