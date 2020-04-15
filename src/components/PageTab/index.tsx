@@ -63,7 +63,6 @@ interface IPane {
  */
 interface IProps extends IEditTabProps {
   // tab 渲染列表'
-  index: string;
   key: string;
   paneList: IPane[];
 }
