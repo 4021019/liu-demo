@@ -1,6 +1,6 @@
 import { Tabs } from 'antd';
 import { TabsProps } from 'antd/lib/tabs';
-import React, { ReactElement, ComponentClass } from 'react';
+import React, { ReactElement, ComponentClass, ComponentType } from 'react';
 import {
   DndProvider,
   DragElementWrapper,
@@ -35,16 +35,27 @@ interface x {
  * 拖拽 tab 节点
  */
 interface ITagNodeProps {
-  children: ComponentClass<x>;
+  index: string;
+  key: string;
+  move: (dragKey: string, hoverKey: string) => void;
+  children: any;
   connectDragSource: DragElementWrapper<any>;
   connectDropTarget: DragElementWrapper<any>;
   isOver: boolean;
   isDragging: boolean;
 }
+
+type WrapTabNodeType = DndComponentClass<
+  DndComponentClass<ComponentType<ITagNodeProps>, ITagNodeProps>,
+  Pick<ITagNodeProps, 'children' | 'index' | 'move' | 'key'>
+>;
+
 /**
  * 拖拽 tab 面板
  */
-interface IDraggableTabProps extends IEditTabProps {}
+interface IDraggableTabProps extends IEditTabProps {
+  children: any;
+}
 
 /**
  * tab 面板参数类型
@@ -102,34 +113,22 @@ class TabNode extends React.Component<ITagNodeProps> {
 }
 
 const sourceSpec = {
-  beginDrag(props, monitor, component) {
-    return {
-      id: props.id,
-      index: props.index,
-    };
+  beginDrag(props: ITagNodeProps, monitor: any, component: any) {
+    return props;
   },
 };
 
 const targetSpec = {
-  drop(props, monitor, component) {
+  drop(props: ITagNodeProps, monitor: any, component: React.Component) {
     const dragIndex = monitor.getItem().index;
     const hoverIndex = props.index;
 
     if (dragIndex === hoverIndex) {
       return;
     }
-    props.moveTabNode(dragIndex, hoverIndex);
+    props.move(dragIndex, hoverIndex);
   },
 };
-
-interface RequiredProps {}
-
-// const dragMethod = DragSource<RequiredProps, CollectedProps = {}, DragObject = {}>(
-// type: SourceType | ((props: RequiredProps) => SourceType),
-// spec: DragSourceSpec<RequiredProps, DragObject>,
-// collect: DragSourceCollector<CollectedProps, RequiredProps>,
-// options?: DndOptions<RequiredProps>)
-// : DndComponentEnhancer<CollectedProps>
 
 const dragMethod: DndComponentEnhancer<{
   connectDragSource: DragElementWrapper<DragSourceOptions>;
@@ -138,33 +137,35 @@ const dragMethod: DndComponentEnhancer<{
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging(),
 }));
-
 const dropMethod = DropTarget(TYPE, targetSpec, (connect, monitor) => ({
   isOver: monitor.isOver(),
   connectDropTarget: connect.dropTarget(),
 }));
 
-const WrapTabNode: DndComponentClass<
-  DndComponentClass<
-    typeof TabNode,
-    Pick<ITagNodeProps, 'connectDragSource' | 'isDragging' | 'children'>
-  >,
-  Pick<
-    Pick<ITagNodeProps, 'connectDragSource' | 'isDragging' | 'children'>,
-    'children'
-  >
-> = dragMethod(dropMethod(TabNode));
-class DraggableTabs extends React.Component<IDraggableTabProps> {
-  state = {
-    order: [],
-  };
+const WrapTabNode: WrapTabNodeType = dragMethod(dropMethod(TabNode));
 
-  moveTabNode = (dragKey, hoverKey) => {
-    const newOrder = this.state.order.slice();
+interface IDraggableTabState {
+  order: string[];
+}
+
+class DraggableTabs extends React.Component<
+  IDraggableTabProps,
+  IDraggableTabState
+> {
+  constructor(props: IDraggableTabProps) {
+    super(props);
+    this.state = {
+      order: [],
+    };
+  }
+
+  move = (dragKey: string, hoverKey: string): void => {
+    const newOrder: string[] = this.state.order.slice();
     const { children } = this.props;
-    React.Children.forEach(children, c => {
-      if (newOrder.indexOf(c.key) === -1) {
-        newOrder.push(c.key);
+    React.Children.forEach<ITagNodeProps>(children, c => {
+      const { key } = c;
+      if (newOrder.indexOf(key) === -1) {
+        newOrder.push(key);
       }
     });
     const dragIndex = newOrder.indexOf(dragKey);
@@ -176,10 +177,10 @@ class DraggableTabs extends React.Component<IDraggableTabProps> {
     });
   };
 
-  remove = targetKey => {
+  remove = (targetKey: string) => {
     const newOrder: string[] = [];
     const { children } = this.props;
-    React.Children.forEach(children, c => {
+    React.Children.forEach<ITagNodeProps>(children, c => {
       if (c.key !== targetKey) {
         newOrder.push(c.key);
       }
@@ -198,11 +199,7 @@ class DraggableTabs extends React.Component<IDraggableTabProps> {
       {(node: any): ReactElement => {
         console.log(node);
         return (
-          <WrapTabNode
-            index={node.key}
-            key={node.key ? node.key : '1'}
-            moveTabNode={this.moveTabNode}
-          >
+          <WrapTabNode index={node.key} key={node.key} move={this.move}>
             {node}
           </WrapTabNode>
         );
@@ -213,28 +210,30 @@ class DraggableTabs extends React.Component<IDraggableTabProps> {
   render() {
     const { order } = this.state;
     const { children } = this.props;
-    const tabs: any = [];
+    const tabs: ITagNodeProps[] = [];
 
-    React.Children.forEach(children, c => {
+    React.Children.forEach<ITagNodeProps>(children, c => {
       tabs.push(c);
     });
 
-    const orderTabs = tabs.slice().sort((a, b) => {
-      const orderA = order.indexOf(a.key);
-      const orderB = order.indexOf(b.key);
-      if (orderA !== -1 && orderB !== -1) {
-        return orderA - orderB;
-      }
-      if (orderA !== -1) {
-        return -1;
-      }
-      if (orderB !== -1) {
-        return 1;
-      }
-      const ia = tabs.indexOf(a);
-      const ib = tabs.indexOf(b);
-      return ia - ib;
-    });
+    const orderTabs = tabs
+      .slice()
+      .sort((a: ITagNodeProps, b: ITagNodeProps) => {
+        const orderA = order.indexOf(a.key);
+        const orderB = order.indexOf(b.key);
+        if (orderA !== -1 && orderB !== -1) {
+          return orderA - orderB;
+        }
+        if (orderA !== -1) {
+          return -1;
+        }
+        if (orderB !== -1) {
+          return 1;
+        }
+        const ia = tabs.indexOf(a);
+        const ib = tabs.indexOf(b);
+        return ia - ib;
+      });
 
     return (
       <DndProvider backend={HTML5Backend}>
@@ -260,11 +259,13 @@ class DraggableTabs extends React.Component<IDraggableTabProps> {
 export default (props: IProps) => {
   return (
     <DraggableTabs remove={props.remove}>
-      {props.paneList.map(o => (
-        <TabPane tab={o.tab} key={o.key}>
-          {o.content}
-        </TabPane>
-      ))}
+      {props.paneList.map(o => {
+        return (
+          <TabPane tab={o.tab} key={o.key}>
+            {o.content}
+          </TabPane>
+        );
+      })}
     </DraggableTabs>
   );
 };
