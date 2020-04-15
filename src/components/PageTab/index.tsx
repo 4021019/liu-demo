@@ -1,25 +1,71 @@
-import React, { ReactInstance } from 'react';
+import { Tabs } from 'antd';
+import { TabsProps } from 'antd/lib/tabs';
+import React, { ReactElement, ComponentClass } from 'react';
 import {
   DndProvider,
+  DragElementWrapper,
   DragSource,
   DropTarget,
-  XYCoord,
-  DragElementWrapper,
+  DragSourceOptions,
 } from 'react-dnd';
+import {
+  DndComponentEnhancer,
+  DndComponentClass,
+} from 'react-dnd/lib/decorators/interfaces';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { Tabs } from 'antd';
-import { findDOMNode } from 'react-dom';
+import './style.less';
+
 const { TabPane } = Tabs;
 
 const TYPE = 'TAB';
 
-// Drag & Drop node
+/**
+ * tab 编辑
+ */
+interface IEditTabProps {
+  // 移除tab
+  remove: (targetKey: string) => void;
+}
 
+interface x {
+  index: string;
+}
+
+/**
+ * 拖拽 tab 节点
+ */
 interface ITagNodeProps {
+  children: ComponentClass<x>;
   connectDragSource: DragElementWrapper<any>;
   connectDropTarget: DragElementWrapper<any>;
   isOver: boolean;
   isDragging: boolean;
+}
+/**
+ * 拖拽 tab 面板
+ */
+interface IDraggableTabProps extends IEditTabProps {}
+
+/**
+ * tab 面板参数类型
+ */
+interface IPane {
+  // tab title
+  tab: string;
+  // tab 唯一 key
+  key: string;
+  // tab 本体内容 eg：<div>123</div>
+  content: any;
+}
+
+/**
+ * 组件参数类型
+ */
+interface IProps extends IEditTabProps {
+  // tab 渲染列表'
+  index: string;
+  key: string;
+  paneList: IPane[];
 }
 
 class TabNode extends React.Component<ITagNodeProps> {
@@ -38,8 +84,17 @@ class TabNode extends React.Component<ITagNodeProps> {
           ...children.props,
           style: {
             ...children.props.style,
-            border: isDragging ? '1px dashed black' : '',
+            border: isDragging ? '1px dashed black' : '1px solid #A0A0A0',
             background: isDragging ? '' : isOver ? '#A0A0A0' : '',
+            height: '25px',
+            fontSize: 'small',
+            lineHeight: '25px',
+            fontWeight: 'normal',
+            maxWidth: '100px',
+
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
           },
         },
       }),
@@ -68,7 +123,19 @@ const targetSpec = {
   },
 };
 
-const dragMethod = DragSource(TYPE, sourceSpec, (connect, monitor) => ({
+interface RequiredProps {}
+
+// const dragMethod = DragSource<RequiredProps, CollectedProps = {}, DragObject = {}>(
+// type: SourceType | ((props: RequiredProps) => SourceType),
+// spec: DragSourceSpec<RequiredProps, DragObject>,
+// collect: DragSourceCollector<CollectedProps, RequiredProps>,
+// options?: DndOptions<RequiredProps>)
+// : DndComponentEnhancer<CollectedProps>
+
+const dragMethod: DndComponentEnhancer<{
+  connectDragSource: DragElementWrapper<DragSourceOptions>;
+  isDragging: boolean;
+}> = DragSource(TYPE, sourceSpec, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging(),
 }));
@@ -78,9 +145,17 @@ const dropMethod = DropTarget(TYPE, targetSpec, (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
 }));
 
-const WrapTabNode = dragMethod(dropMethod(TabNode));
-
-class DraggableTabs extends React.Component {
+const WrapTabNode: DndComponentClass<
+  DndComponentClass<
+    typeof TabNode,
+    Pick<ITagNodeProps, 'connectDragSource' | 'isDragging' | 'children'>
+  >,
+  Pick<
+    Pick<ITagNodeProps, 'connectDragSource' | 'isDragging' | 'children'>,
+    'children'
+  >
+> = dragMethod(dropMethod(TabNode));
+class DraggableTabs extends React.Component<IDraggableTabProps> {
   state = {
     order: [],
   };
@@ -102,13 +177,31 @@ class DraggableTabs extends React.Component {
     });
   };
 
-  renderTabBar = (props, DefaultTabBar) => (
+  remove = targetKey => {
+    const newOrder: string[] = [];
+    const { children } = this.props;
+    React.Children.forEach(children, c => {
+      if (c.key !== targetKey) {
+        newOrder.push(c.key);
+      }
+    });
+    console.log(`new order ${newOrder}`);
+    this.setState({
+      order: newOrder,
+    });
+  };
+
+  renderTabBar = (
+    props: TabsProps,
+    DefaultTabBar: React.ComponentClass<TabsProps>,
+  ): React.ReactElement => (
     <DefaultTabBar {...props}>
-      {node => {
+      {(node: any): ReactElement => {
+        console.log(node);
         return (
           <WrapTabNode
-            key={node.key}
             index={node.key}
+            key={node.key ? node.key : '1'}
             moveTabNode={this.moveTabNode}
           >
             {node}
@@ -121,17 +214,15 @@ class DraggableTabs extends React.Component {
   render() {
     const { order } = this.state;
     const { children } = this.props;
-
     const tabs: any = [];
+
     React.Children.forEach(children, c => {
       tabs.push(c);
     });
 
     const orderTabs = tabs.slice().sort((a, b) => {
-      console.log(a);
       const orderA = order.indexOf(a.key);
       const orderB = order.indexOf(b.key);
-
       if (orderA !== -1 && orderB !== -1) {
         return orderA - orderB;
       }
@@ -149,6 +240,13 @@ class DraggableTabs extends React.Component {
     return (
       <DndProvider backend={HTML5Backend}>
         <Tabs
+          tabBarGutter={0}
+          onEdit={(targetKey, action) => {
+            if ('remove' === action) {
+              this.props.remove(targetKey.toString());
+            }
+          }}
+          hideAdd
           type="editable-card"
           renderTabBar={this.renderTabBar}
           {...this.props}
@@ -160,25 +258,9 @@ class DraggableTabs extends React.Component {
   }
 }
 
-/**
- * tab 面板参数类型
- */
-interface IPane {
-  tab: string;
-  key: string;
-  content: any;
-}
-
-/**
- * 组件参数类型
- */
-interface IProps {
-  paneList: IPane[];
-}
-
 export default (props: IProps) => {
   return (
-    <DraggableTabs>
+    <DraggableTabs remove={props.remove}>
       {props.paneList.map(o => (
         <TabPane tab={o.tab} key={o.key}>
           {o.content}

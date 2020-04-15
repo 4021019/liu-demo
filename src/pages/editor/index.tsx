@@ -36,20 +36,32 @@ export default class PageEditor extends React.Component<any, IState> {
     };
   }
 
-  add = () => {
+  add = (): void => {
+    let key = fileId();
     this.state.paneList.push({
-      tab: 'new file',
-      key: fileId(),
-      content: <div>123</div>,
+      tab: key,
+      key: key,
+      content: <div>{key}</div>,
     });
     this.setState({
       paneList: this.state.paneList,
     });
   };
 
-  onEdit = (targetKey: any, action: string) => {
-    // this[action](targetKey);
-    console.log(action);
+  remove = (targetKey: string): void => {
+    this.state.paneList;
+    let index = 0;
+    for (; index < this.state.paneList.length; index++) {
+      const element = this.state.paneList[index];
+      if (element.key === targetKey) {
+        break;
+      }
+    }
+    this.state.paneList.splice(index, 1);
+    this.setState({
+      ...this.state,
+      paneList: this.state.paneList,
+    });
   };
 
   render() {
@@ -102,7 +114,7 @@ export default class PageEditor extends React.Component<any, IState> {
           </Row>
         </Header>
         <Content>
-          <PageTab paneList={this.state.paneList} />
+          <PageTab remove={this.remove} paneList={this.state.paneList} />
         </Content>
       </Layout>
     );

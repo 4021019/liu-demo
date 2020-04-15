@@ -17,41 +17,6 @@ interface IState {
 }
 
 export default class HomePage extends React.Component<any, IState> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      renderMerge: false,
-      paneList: [
-        {
-          tab: 'liuwentao',
-          key: '1',
-          content: <CodeEditor value={d.toString()} renderMerge={false} />,
-        },
-        {
-          tab: 'liuwentao2',
-          key: '2',
-          content: <CodeEditor value={d.toString()} renderMerge={false} />,
-        },
-      ],
-    };
-  }
-
-  add = () => {
-    this.state.paneList.push({
-      tab: 'new file',
-      key: fileId(),
-      content: <div>123</div>,
-    });
-    this.setState({
-      paneList: this.state.paneList,
-    });
-  };
-
-  onEdit = (targetKey: any, action: string) => {
-    // this[action](targetKey);
-    console.log(action);
-  };
-
   render() {
     return (
       <Layout>
