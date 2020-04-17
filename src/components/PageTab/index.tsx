@@ -87,25 +87,28 @@ class TabNode extends React.Component<ITagNodeProps> {
       isDragging,
       isOver,
     } = this.props;
+
+    console.log(children);
     return connectDragSource(
       connectDropTarget({
         ...children,
         props: {
           ...children.props,
-          style: {
-            ...children.props.style,
-            border: isDragging ? '1px dashed black' : '1px solid #A0A0A0',
-            background: isDragging ? '' : isOver ? '#A0A0A0' : '',
-            height: '25px',
-            fontSize: 'small',
-            lineHeight: '25px',
-            fontWeight: 'normal',
-            maxWidth: '100px',
+          className: `ant-tabs-tab ${isDragging ? 'tabs-is-dragging' : ''}`,
+          // style: {
+          //   ...children.props.style,
+          //   border: isDragging ? '1px dashed black' : '1px solid #A0A0A0',
+          //   background: isDragging ? '' : isOver ? '#A0A0A0' : '',
+          //   height: '25px',
+          //   fontSize: 'small',
+          //   lineHeight: '25px',
+          //   fontWeight: 'normal',
+          //   maxWidth: '150px',
 
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-          },
+          //   overflow: 'hidden',
+          //   whiteSpace: 'nowrap',
+          //   textOverflow: .textOverflow,
+          // },
         },
       }),
     );
@@ -244,7 +247,7 @@ class DraggableTabs extends React.Component<
               this.props.remove(targetKey.toString());
             }
           }}
-          hideAdd
+          hideAdd={true}
           type="editable-card"
           renderTabBar={this.renderTabBar}
           {...this.props}
