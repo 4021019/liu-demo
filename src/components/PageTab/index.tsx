@@ -1,18 +1,18 @@
 import { Tabs } from 'antd';
 import { TabsProps } from 'antd/lib/tabs';
-import React, { ReactElement, ComponentClass, ComponentType } from 'react';
+import React, { ComponentType, ReactElement } from 'react';
 import {
   DndProvider,
   DragElementWrapper,
   DragSource,
-  DropTarget,
   DragSourceOptions,
+  DropTarget,
 } from 'react-dnd';
-import {
-  DndComponentEnhancer,
-  DndComponentClass,
-} from 'react-dnd/lib/decorators/interfaces';
 import HTML5Backend from 'react-dnd-html5-backend';
+import {
+  DndComponentClass,
+  DndComponentEnhancer,
+} from 'react-dnd/lib/decorators/interfaces';
 import './style.less';
 
 const { TabPane } = Tabs;
@@ -25,10 +25,6 @@ const TYPE = 'TAB';
 interface IEditTabProps {
   // 移除tab
   remove: (targetKey: string) => void;
-}
-
-interface x {
-  index: string;
 }
 
 /**
@@ -55,6 +51,7 @@ type WrapTabNodeType = DndComponentClass<
  */
 interface IDraggableTabProps extends IEditTabProps {
   children: any;
+  setActive: (key: string) => void;
 }
 
 /**
@@ -94,21 +91,9 @@ class TabNode extends React.Component<ITagNodeProps> {
         ...children,
         props: {
           ...children.props,
-          className: `ant-tabs-tab ${isDragging ? 'tabs-is-dragging' : ''}`,
-          // style: {
-          //   ...children.props.style,
-          //   border: isDragging ? '1px dashed black' : '1px solid #A0A0A0',
-          //   background: isDragging ? '' : isOver ? '#A0A0A0' : '',
-          //   height: '25px',
-          //   fontSize: 'small',
-          //   lineHeight: '25px',
-          //   fontWeight: 'normal',
-          //   maxWidth: '150px',
-
-          //   overflow: 'hidden',
-          //   whiteSpace: 'nowrap',
-          //   textOverflow: .textOverflow,
-          // },
+          className: `${children.props.className} ${
+            isDragging ? 'tabs-is-dragging' : ''
+          } ${isOver ? 'tabs-is-over' : ''}`,
         },
       }),
     );
@@ -241,6 +226,9 @@ class DraggableTabs extends React.Component<
     return (
       <DndProvider backend={HTML5Backend}>
         <Tabs
+          onChange={activeKey => {
+            this.props.setActive(activeKey);
+          }}
           tabBarGutter={0}
           onEdit={(targetKey, action) => {
             if ('remove' === action) {
@@ -259,16 +247,32 @@ class DraggableTabs extends React.Component<
   }
 }
 
-export default (props: IProps) => {
-  return (
-    <DraggableTabs remove={props.remove}>
-      {props.paneList.map(o => {
-        return (
-          <TabPane tab={o.tab} key={o.key}>
-            {o.content}
-          </TabPane>
-        );
-      })}
-    </DraggableTabs>
-  );
-};
+export default class PageTab extends React.Component<IProps> {
+  state = {
+    activeKey: null,
+  };
+
+  setActive = (key: string): void => {
+    this.setState({
+      activeKey: key,
+    });
+  };
+
+  render() {
+    return (
+      <DraggableTabs setActive={this.setActive} remove={this.props.remove}>
+        {this.props.paneList.map(o => {
+          return (
+            <TabPane
+              tab={<div className="tabs-tab-title">{o.tab}</div>}
+              closable={this.state.activeKey === o.key}
+              key={o.key}
+            >
+              {o.content}
+            </TabPane>
+          );
+        })}
+      </DraggableTabs>
+    );
+  }
+}

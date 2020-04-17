@@ -1,22 +1,21 @@
 .ant-tabs-tab {
-  max-width: 150px;
-  div {
-    border: 1px solid black !important;
-    background-color: green !important;
-    overflow: hidden !important;
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-  }
+  width: 128px;
 }
 
 .tabs-is-dragging {
-  max-width: 150px;
+  width: 128px;
   border: 1px dotted black !important;
-  div {
-    border: 1pxs solid black !important;
-    background-color: green !important;
-    overflow: hidden !important;
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-  }
+}
+
+.tabs-tab-title {
+  display: inline-grid;
+  width: 100% - 12px;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+.tabs-is-over {
+  background-color: gray !important;
+  border: 1px solid gray !important;
 }
