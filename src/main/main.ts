@@ -1,34 +1,45 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, globalShortcut } from 'electron';
 import path from 'path';
 import './ping.ts';
 
+const ENV_DEV = 'development';
+const KEY_F12 = 'F12';
+
 function createWindow() {
   // 创建浏览器窗口
-  console.log(path.join(__dirname, 'preload.ts'))
+  console.log(path.join(__dirname, 'preload.ts'));
   const win = new BrowserWindow({
     width: 1366,
     height: 768,
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === ENV_DEV) {
     win.loadURL('http://localhost:8000/#/');
   } else {
     // 并且为你的应用加载index.html
     win.loadFile('./dist/index.html');
   }
-
-  // 打开开发者工具
-  win.webContents.openDevTools();
+  return win;
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // 部分 API 在 ready 事件触发后才能使用。
-app.whenReady().then(createWindow);
+
+app.whenReady().then(() => {
+  let win = createWindow();
+  if (win && process.env.NODE_ENV === ENV_DEV) {
+    globalShortcut.register(KEY_F12, () => {
+      // 打开开发者工具
+      console.log('F12 open dev tools');
+      win.webContents.openDevTools();
+    });
+  }
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
