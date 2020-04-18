@@ -10,7 +10,9 @@ function createWindow() {
   console.log(path.join(__dirname, 'preload.ts'));
   const win = new BrowserWindow({
     width: 1366,
+    minWidth: 680,
     height: 768,
+    minHeight: 480,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, 'preload.js'),

@@ -1,7 +1,7 @@
 import CodeEditor from '@/components/CodeEditor';
 import PageTab from '@/components/PageTab';
 import { fs, os } from '@/config/SystemConfig.ts';
-import { Col, Layout, Row, Switch, Tabs } from 'antd';
+import { Col, Layout, Row, Switch, Tabs, Card } from 'antd';
 import React from 'react';
 import { fileId } from '@/util/FileUtil';
 
@@ -15,6 +15,10 @@ interface IState {
   renderMerge: boolean;
   paneList: any;
 }
+const gridStyle = {
+  width: '100%',
+  textAlign: 'center',
+};
 
 export default class PageEditor extends React.Component<any, IState> {
   constructor(props: any) {
@@ -22,16 +26,16 @@ export default class PageEditor extends React.Component<any, IState> {
     this.state = {
       renderMerge: false,
       paneList: [
-        {
-          tab: 'liuwentao',
-          key: '1',
-          content: <CodeEditor value={d.toString()} renderMerge={true} />,
-        },
-        {
-          tab: 'liuwentao2',
-          key: '2',
-          content: <CodeEditor value={d.toString()} renderMerge={false} />,
-        },
+        // {
+        //   tab: 'liuwentao',
+        //   key: '1',
+        //   content: <CodeEditor value={d.toString()} renderMerge={true} />,
+        // },
+        // {
+        //   tab: 'liuwentao2',
+        //   key: '2',
+        //   content: <CodeEditor value={d.toString()} renderMerge={false} />,
+        // },
       ],
     };
   }
@@ -41,7 +45,13 @@ export default class PageEditor extends React.Component<any, IState> {
     this.state.paneList.push({
       tab: key,
       key: key,
-      content: <div>{key}</div>,
+      content: (
+        <Card title={key}>
+          <Card.Grid style={gridStyle}>markdown</Card.Grid>
+          <Card.Grid style={gridStyle}>codemirror</Card.Grid>
+          <Card.Grid style={gridStyle}>waiting...</Card.Grid>
+        </Card>
+      ),
     });
     this.setState({
       paneList: this.state.paneList,
