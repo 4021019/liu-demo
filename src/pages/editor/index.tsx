@@ -25,7 +25,7 @@ export default class PageEditor extends React.Component<any, IState> {
         {
           tab: 'liuwentao',
           key: '1',
-          content: <CodeEditor value={d.toString()} renderMerge={false} />,
+          content: <CodeEditor value={d.toString()} renderMerge={true} />,
         },
         {
           tab: 'liuwentao2',

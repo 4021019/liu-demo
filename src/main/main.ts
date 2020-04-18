@@ -33,6 +33,7 @@ function createWindow() {
 app.whenReady().then(() => {
   let win = createWindow();
   if (win && process.env.NODE_ENV === ENV_DEV) {
+    win.webContents.openDevTools();
     globalShortcut.register(KEY_F12, () => {
       // 打开开发者工具
       console.log('F12 open dev tools');
