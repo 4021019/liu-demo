@@ -34,29 +34,29 @@ class IndexPage extends React.Component<PageProps, IState> {
           switch (key) {
             case 'codemirror':
               return <CodeEditor value={key} renderMerge={true} />;
+            case 'markdown':
+              return <div>{this.state.type}</div>;
             default:
               return (
                 <Card title={'test'}>
-                  <Card.Grid
-                    style={gridStyle}
+                  <div
                     onClick={() => {
                       this.setState({
                         type: 'markdown',
                       });
                     }}
                   >
-                    markdown
-                  </Card.Grid>
-                  <Card.Grid
-                    style={gridStyle}
+                    <Card.Grid style={gridStyle}>markdown</Card.Grid>
+                  </div>
+                  <div
                     onClick={() => {
                       this.setState({
                         type: 'codemirror',
                       });
                     }}
                   >
-                    codemirror
-                  </Card.Grid>
+                    <Card.Grid style={gridStyle}>codemirror</Card.Grid>
+                  </div>
                   <Card.Grid style={gridStyle}>waiting...</Card.Grid>
                 </Card>
               );
