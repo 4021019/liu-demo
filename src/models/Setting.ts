@@ -1,4 +1,5 @@
 import { Effect, Reducer, Subscription } from 'umi';
+
 import { systemConfig } from '@/config/SystemConfig';
 
 export interface ISettingModelState {
@@ -40,7 +41,6 @@ const Model: ISettingModelType = {
         ...action.payload,
       };
     },
-    // 启用 immer 之后
     // save(state:ISettingModelState, action:any) {
     //   state = action.payload;
     // },
