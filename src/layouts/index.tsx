@@ -5,20 +5,12 @@ import { Rnd } from 'react-rnd';
 import { history } from 'umi';
 import { Result, Button } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
+import { connect, ILayoutModelProps } from 'umi';
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
-const menu = (
-  <Menu>
-    <Menu.Item key="1">1st menu item</Menu.Item>
-    <Menu.Item key="2">2nd menu item</Menu.Item>
-    <Menu.Item key="3">3rd menu item</Menu.Item>
-  </Menu>
-);
-
-export default class MyLayout extends React.Component<any, any> {
+class MyLayout extends React.Component<any, any> {
   private rnd: any;
-
   constructor(props: any) {
     super(props);
     this.state = {
@@ -63,6 +55,7 @@ export default class MyLayout extends React.Component<any, any> {
   };
 
   render() {
+    console.log(this.props);
     if (this.props.location.pathname === '/') {
       return (
         <Result
@@ -216,3 +209,7 @@ export default class MyLayout extends React.Component<any, any> {
     );
   }
 }
+
+export default connect((module: ILayoutModelProps) => ({
+  layout: module.layout,
+}))(MyLayout);

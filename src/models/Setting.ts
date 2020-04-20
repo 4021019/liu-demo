@@ -1,6 +1,13 @@
 import { Effect, Reducer, Subscription } from 'umi';
+import produce, { Draft } from 'immer';
 
 import { systemConfig } from '@/config/SystemConfig';
+import { Action } from 'redux';
+import StateBlock from 'markdown-it/lib/rules_block/state_block';
+
+export type ISettingModelProps = {
+  setting: ISettingModelState;
+};
 
 export interface ISettingModelState {
   homedir?: string;
@@ -18,11 +25,11 @@ export interface ISettingModelType {
   };
   reducers: {
     save: Reducer<ISettingModelState>;
-    // save: ImmerReducer<IndexModelState>;
+    // save: ImmerReducer<ISettingModelState>;
   };
   subscriptions: { setup: Subscription };
 }
-const Model: ISettingModelType = {
+const SettingModel: ISettingModelType = {
   namespace: 'setting',
   state: {},
   effects: {
@@ -35,15 +42,12 @@ const Model: ISettingModelType = {
     },
   },
   reducers: {
-    save(state, action) {
+    save(state: any, action: any) {
       return {
         ...state,
         ...action.payload,
       };
     },
-    // save(state:ISettingModelState, action:any) {
-    //   state = action.payload;
-    // },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -59,4 +63,4 @@ const Model: ISettingModelType = {
   },
 };
 
-export default Model;
+export default SettingModel;

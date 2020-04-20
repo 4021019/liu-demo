@@ -1,10 +1,8 @@
 import { Divider, List } from 'antd';
 import React from 'react';
-import { connect, ISettingModelState } from 'umi';
+import { connect, ISettingModelProps } from 'umi';
 
-interface IProps {
-  setting: ISettingModelState;
-}
+interface IProps extends ISettingModelProps {}
 
 class SettingPage extends React.Component<IProps> {
   constructor(props: any) {
@@ -37,6 +35,6 @@ class SettingPage extends React.Component<IProps> {
   }
 }
 
-export default connect((module: IProps) => ({
+export default connect((module: ISettingModelProps) => ({
   setting: module.setting,
 }))(SettingPage);
