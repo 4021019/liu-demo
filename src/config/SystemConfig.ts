@@ -18,13 +18,13 @@ const DEFAULT_CONFIG = {
   },
 };
 
-function readFileList(dir: string, filesList: any[]) {
+function readFileRecursion(dir: string, filesList: any[]) {
   const files = fs.readdirSync(dir);
   files.forEach((item: any, index: any) => {
     var fullPath = path.join(dir, item);
     const stat = fs.statSync(fullPath);
     if (stat.isDirectory()) {
-      readFileList(path.join(dir, item), filesList); //递归读取文件
+      readFileRecursion(path.join(dir, item), filesList); //递归读取文件
     } else {
       filesList.push(fullPath);
     }
@@ -32,8 +32,20 @@ function readFileList(dir: string, filesList: any[]) {
   return filesList;
 }
 
+function readDir(dir: string, filesList: any[]) {
+  const files = fs.readdirSync(dir);
+  files.forEach((item: any, index: any) => {
+    var fullPath = path.join(dir, item);
+    const stat = fs.statSync(fullPath);
+    if (stat.isDirectory()) {
+      filesList.push(fullPath);
+    }
+  });
+  return filesList;
+}
+
 let filesList: any[] = [];
-mkdir(APP_DIR)
+mkdir(APP_DIR);
 
 let config: any;
 try {
@@ -48,12 +60,15 @@ try {
   });
   config = DEFAULT_CONFIG;
 }
-mkdir(config.docSetting.baseDir)
+mkdir(config.docSetting.baseDir);
 
 console.log(config);
-readFileList(APP_DIR, filesList);
+readFileRecursion(APP_DIR, filesList);
 console.log(filesList);
 
+let filesList2: any[] = [];
+readDir(config.docSetting.baseDir, filesList2);
+console.log(filesList2);
 
 export const systemConfig = {
   homedir: os.homedir(),

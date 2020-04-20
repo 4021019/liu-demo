@@ -3,5 +3,8 @@ export default {
   dynamicImport: {},
   runtimePublicPath: true,
   publicPath: './',
-  outputPath: 'app/dist'
+  outputPath: 'app/dist',
+  dva: {
+    immer: true,
+  },
 };

@@ -34,7 +34,6 @@ interface ITagNodeProps {
   index: string;
   key: string;
   move: (dragKey: string, hoverKey: string) => void;
-  children: any;
   connectDragSource: DragElementWrapper<any>;
   connectDropTarget: DragElementWrapper<any>;
   isOver: boolean;
