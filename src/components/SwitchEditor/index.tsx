@@ -7,7 +7,9 @@ interface PageProps {
   type: 'markdown' | 'codemirror' | 'new';
 }
 
-interface IState {}
+interface IState {
+  type: 'markdown' | 'codemirror' | 'new';
+}
 
 const gridStyle: React.CSSProperties = {
   width: '100%',
@@ -17,6 +19,9 @@ const gridStyle: React.CSSProperties = {
 export default class SwitchEditor extends React.Component<PageProps, IState> {
   constructor(props: PageProps) {
     super(props);
+    this.state = {
+      type: props.type,
+    };
   }
 
   render() {
@@ -27,7 +32,7 @@ export default class SwitchEditor extends React.Component<PageProps, IState> {
             case 'codemirror':
               return <CodeEditor value={key} renderMerge={true} />;
             case 'markdown':
-              return <div>{this.props.type}</div>;
+              return <div>{this.state.type}</div>;
             default:
               return (
                 <Card title={'test'}>
@@ -53,7 +58,7 @@ export default class SwitchEditor extends React.Component<PageProps, IState> {
                 </Card>
               );
           }
-        })(this.props.type)}
+        })(this.state.type)}
       </div>
     );
   }
