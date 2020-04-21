@@ -29,6 +29,7 @@ export interface ISettingModelType {
   };
   subscriptions: { setup: Subscription };
 }
+
 const SettingModel: ISettingModelType = {
   namespace: 'setting',
   state: {},
@@ -38,7 +39,6 @@ const SettingModel: ISettingModelType = {
         type: 'save',
         payload: payload,
       });
-      console.log(payload);
     },
   },
   reducers: {

@@ -25,6 +25,7 @@ const TYPE = 'TAB';
 interface IEditTabProps {
   // 移除tab
   remove: (targetKey: string) => void;
+  update: (order: string[]) => void;
 }
 
 /**
@@ -34,6 +35,7 @@ interface ITagNodeProps {
   index: string;
   key: string;
   move: (dragKey: string, hoverKey: string) => void;
+  children: any;
   connectDragSource: DragElementWrapper<any>;
   connectDropTarget: DragElementWrapper<any>;
   isOver: boolean;
@@ -50,6 +52,7 @@ type WrapTabNodeType = DndComponentClass<
  */
 interface IDraggableTabProps extends IEditTabProps {
   children: any;
+  order: string[];
   setActive: (key: string) => void;
 }
 
@@ -71,6 +74,7 @@ interface IPane {
 interface IProps extends IEditTabProps {
   // tab 渲染列表'
   paneList: IPane[];
+  order: string[];
 }
 
 class TabNode extends React.Component<ITagNodeProps> {
@@ -129,8 +133,7 @@ const dropMethod = DropTarget(TYPE, targetSpec, (connect, monitor) => ({
 const WrapTabNode: WrapTabNodeType = dragMethod(dropMethod(TabNode));
 
 interface IDraggableTabState {
-  order: string[];
-  orderTabs?: any;
+  // todo 移除
 }
 
 class DraggableTabs extends React.Component<
@@ -139,13 +142,10 @@ class DraggableTabs extends React.Component<
 > {
   constructor(props: IDraggableTabProps) {
     super(props);
-    this.state = {
-      order: [],
-    };
   }
 
   move = (dragKey: string, hoverKey: string): void => {
-    const newOrder: string[] = this.state.order.slice();
+    const newOrder: string[] = this.props.order.slice();
     const { children } = this.props;
     React.Children.forEach<ITagNodeProps>(children, c => {
       const { key } = c;
@@ -157,22 +157,7 @@ class DraggableTabs extends React.Component<
     const hoverIndex = newOrder.indexOf(hoverKey);
     newOrder.splice(dragIndex, 1);
     newOrder.splice(hoverIndex, 0, dragKey);
-    this.setState({
-      order: newOrder,
-    });
-  };
-
-  remove = (targetKey: string) => {
-    const newOrder: string[] = [];
-    const { children } = this.props;
-    React.Children.forEach<ITagNodeProps>(children, c => {
-      if (c.key !== targetKey) {
-        newOrder.push(c.key);
-      }
-    });
-    this.setState({
-      order: newOrder,
-    });
+    this.props.update(newOrder);
   };
 
   renderTabBar = (
@@ -191,14 +176,11 @@ class DraggableTabs extends React.Component<
   );
 
   render() {
-    const { order } = this.state;
-    const { children } = this.props;
+    const { children, order } = this.props;
     const tabs: ITagNodeProps[] = [];
-
     React.Children.forEach<ITagNodeProps>(children, c => {
       tabs.push(c);
     });
-
     const orderTabs = tabs
       .slice()
       .sort((a: ITagNodeProps, b: ITagNodeProps) => {
@@ -274,10 +256,10 @@ export default class PageTab extends React.Component<IProps> {
   render() {
     return (
       <DraggableTabs
+        order={this.props.order}
         setActive={this.setActive}
-        remove={key => {
-          this.props.remove(key);
-        }}
+        update={this.props.update}
+        remove={this.props.remove}
       >
         {this.props.paneList.map(o => {
           return (

@@ -55,6 +55,7 @@ class MyLayout extends React.Component<any, any> {
   };
 
   render() {
+    console.log(this.props);
     if (this.props.location.pathname === '/') {
       return (
         <Result
@@ -80,8 +81,12 @@ class MyLayout extends React.Component<any, any> {
       <div
         tabIndex={999}
         onKeyDown={e => {
-          console.log('000');
           if (e.metaKey && e.keyCode === 83) {
+            console.log(this.props.layouts);
+            this.props.dispatch({
+              type: 'layouts/xxx',
+              payload: 'liuwentao',
+            });
             notification.open({
               key: 'save',
               message: '保存成功',
@@ -215,5 +220,5 @@ class MyLayout extends React.Component<any, any> {
 }
 
 export default connect((module: ILayoutModelProps) => ({
-  layout: module.layouts,
+  layouts: module.layouts,
 }))(MyLayout);

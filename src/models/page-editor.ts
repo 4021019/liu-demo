@@ -1,43 +1,43 @@
 import { Effect, Reducer, Subscription, ConnectProps } from 'umi';
 
-export interface ILayoutModelProps extends ConnectProps {
-  layouts: ILayoutModelState;
+export interface IEditorModelProps extends ConnectProps {
+  editor: IEditorModelState;
 }
 
-export interface ILayoutModelState {
-  name: string;
+export interface IEditorModelState {
+  paneList: any[];
+  order: string[];
 }
 
-export interface ILayoutModelType {
-  namespace: 'layouts';
-  state: ILayoutModelState;
+export interface IEditorModelType {
+  namespace: 'editor';
+  state: IEditorModelState;
   effects: {
-    xxx: Effect;
+    update: Effect;
   };
   reducers: {
-    save: Reducer<ILayoutModelState>;
+    save: Reducer<IEditorModelState>;
   };
   subscriptions: { setup: Subscription };
 }
-const Model: ILayoutModelType = {
-  namespace: 'layouts',
+const EditorModel: IEditorModelType = {
+  namespace: 'editor',
   state: {
-    name: '',
+    paneList: [],
+    order: [],
   },
   effects: {
-    *xxx({ payload }, { call, put }) {
+    *update({ payload }, { call, put }) {
       yield put({
         type: 'save',
         payload: payload,
       });
-      console.log('-----');
     },
   },
   reducers: {
     save(state: any, action: any) {
-      console.log(state);
       return {
-        ...state,
+        ...action.payload,
       };
     },
   },
@@ -49,4 +49,4 @@ const Model: ILayoutModelType = {
     },
   },
 };
-export default Model;
+export default EditorModel;

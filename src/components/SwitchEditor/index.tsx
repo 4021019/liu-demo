@@ -3,11 +3,11 @@ import { Card } from 'antd';
 import React from 'react';
 // import { ConnectProps } from 'umi';
 
-interface PageProps {}
-
-interface IState {
-  type?: 'markdown' | 'codemirror' | 'new';
+interface PageProps {
+  type: 'markdown' | 'codemirror' | 'new';
 }
+
+interface IState {}
 
 const gridStyle: React.CSSProperties = {
   width: '100%',
@@ -17,9 +17,6 @@ const gridStyle: React.CSSProperties = {
 export default class SwitchEditor extends React.Component<PageProps, IState> {
   constructor(props: PageProps) {
     super(props);
-    this.state = {
-      type: 'new',
-    };
   }
 
   render() {
@@ -30,7 +27,7 @@ export default class SwitchEditor extends React.Component<PageProps, IState> {
             case 'codemirror':
               return <CodeEditor value={key} renderMerge={true} />;
             case 'markdown':
-              return <div>{this.state.type}</div>;
+              return <div>{this.props.type}</div>;
             default:
               return (
                 <Card title={'test'}>
@@ -56,7 +53,7 @@ export default class SwitchEditor extends React.Component<PageProps, IState> {
                 </Card>
               );
           }
-        })(this.state.type)}
+        })(this.props.type)}
       </div>
     );
   }
