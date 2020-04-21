@@ -136,7 +136,7 @@ class MyLayout extends React.Component<any, any> {
               <Menu.Item
                 key="2"
                 onClick={() => {
-                  history.push('/');
+                  history.push('/editor');
                 }}
               >
                 <UserOutlined />

@@ -1,12 +1,9 @@
 import CodeEditor from '@/components/CodeEditor';
 import { Card } from 'antd';
 import React from 'react';
-import { connect, ConnectProps, IndexModelState, Loading } from 'umi';
+// import { ConnectProps } from 'umi';
 
-interface PageProps extends ConnectProps {
-  index: IndexModelState;
-  loading: boolean;
-}
+interface PageProps {}
 
 interface IState {
   type?: 'markdown' | 'codemirror' | 'new';
@@ -17,7 +14,7 @@ const gridStyle: React.CSSProperties = {
   textAlign: 'center',
 };
 
-class IndexPage extends React.Component<PageProps, IState> {
+export default class SwitchEditor extends React.Component<PageProps, IState> {
   constructor(props: PageProps) {
     super(props);
     this.state = {
@@ -26,8 +23,6 @@ class IndexPage extends React.Component<PageProps, IState> {
   }
 
   render() {
-    const { name } = this.props.index;
-    console.log(this.props);
     return (
       <div>
         {(key => {
@@ -66,10 +61,3 @@ class IndexPage extends React.Component<PageProps, IState> {
     );
   }
 }
-
-export default connect(
-  ({ index2, loading }: { index2: IndexModelState; loading: Loading }) => ({
-    index: index2,
-    loading: loading.models.index,
-  }),
-)(IndexPage);

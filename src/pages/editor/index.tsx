@@ -1,11 +1,10 @@
-import CodeEditor from '@/components/CodeEditor';
 import PageTab from '@/components/PageTab';
+import SwitchEditor from '@/components/SwitchEditor';
 import { fs, os } from '@/config/SystemConfig.ts';
-import { Col, Layout, Row, Switch, Tabs, Card } from 'antd';
-import React from 'react';
 import { fileId } from '@/util/FileUtil';
-
 import { PlusSquareOutlined } from '@ant-design/icons';
+import { Col, Layout, Row, Switch, Tabs, Empty } from 'antd';
+import React from 'react';
 
 const { Header, Sider, Content } = Layout;
 const { TabPane } = Tabs;
@@ -25,18 +24,7 @@ export default class PageEditor extends React.Component<any, IState> {
     super(props);
     this.state = {
       renderMerge: false,
-      paneList: [
-        // {
-        //   tab: 'liuwentao',
-        //   key: '1',
-        //   content: <CodeEditor value={d.toString()} renderMerge={true} />,
-        // },
-        // {
-        //   tab: 'liuwentao2',
-        //   key: '2',
-        //   content: <CodeEditor value={d.toString()} renderMerge={false} />,
-        // },
-      ],
+      paneList: [],
     };
   }
 
@@ -45,13 +33,7 @@ export default class PageEditor extends React.Component<any, IState> {
     this.state.paneList.push({
       tab: key,
       key: key,
-      content: (
-        <Card title={key}>
-          <Card.Grid style={gridStyle}>markdown</Card.Grid>
-          <Card.Grid style={gridStyle}>codemirror</Card.Grid>
-          <Card.Grid style={gridStyle}>waiting...</Card.Grid>
-        </Card>
-      ),
+      content: <SwitchEditor />,
     });
     this.setState({
       paneList: this.state.paneList,
@@ -124,7 +106,16 @@ export default class PageEditor extends React.Component<any, IState> {
           </Row>
         </Header>
         <Content>
-          <PageTab remove={this.remove} paneList={this.state.paneList} />
+          {this.state.paneList.length > 0 ? (
+            <PageTab remove={this.remove} paneList={this.state.paneList} />
+          ) : (
+            <Empty
+              description="点击左上角[+]创建新的文件"
+              style={{
+                lineHeight: '80vh',
+              }}
+            />
+          )}
         </Content>
       </Layout>
     );
