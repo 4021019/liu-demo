@@ -1,12 +1,12 @@
 import PageTab from '@/components/PageTab';
 import SwitchEditor from '@/components/SwitchEditor';
 import { fs, os } from '@/config/SystemConfig.ts';
+import { IEditorModelProps } from '@/models/page-editor';
 import { fileId } from '@/util/FileUtil';
 import { PlusSquareOutlined } from '@ant-design/icons';
-import { Col, Layout, Row, Switch, Tabs, Empty } from 'antd';
+import { Col, Empty, Layout, Row, Switch, Tabs } from 'antd';
 import React from 'react';
 import { connect, useDispatch } from 'umi';
-import { IEditorModelProps } from '@/models/editor';
 
 const { Header, Sider, Content } = Layout;
 const { TabPane } = Tabs;
@@ -20,19 +20,39 @@ const gridStyle = {
   textAlign: 'center',
 };
 
-const PageEditor = (props: IEditorModelProps, state: IState) => {
+const PageEditor = (props: IEditorModelProps) => {
   const dispatch = useDispatch();
 
-  const updatePaneList = (list: any[]): void => {
+  /**
+   * 更新 tab 页面内容
+   * @param list 新list
+   */
+  const updatePaneMap = (map: Map<String, any>): void => {
     dispatch({
       type: 'editor/update',
       payload: {
         ...props.editor,
-        paneList: list,
+        paneMap: map,
       },
     });
   };
 
+  const updateContent = (key: string, content: any): void => {
+    console.log(key);
+    const newMap = props.editor.paneMap;
+    const old = newMap.get(key);
+    newMap.delete(key);
+    newMap.set(key, {
+      ...old,
+      ...content,
+    });
+    updatePaneMap(newMap);
+  };
+
+  /**
+   * 更新 tab 页面顺序
+   * @param list 新顺序
+   */
   const updateOrder = (list: string[]): void => {
     dispatch({
       type: 'editor/update',
@@ -43,27 +63,38 @@ const PageEditor = (props: IEditorModelProps, state: IState) => {
     });
   };
 
+  /**
+   * 增加 tab 页节点
+   */
   const add = (): void => {
-    let key = fileId();
-    props.editor.paneList.push({
+    const key = fileId();
+    updateContent(key, {
       tab: key,
       key: key,
-      content: <SwitchEditor type="new" />,
+      type: 'new',
+      updateContent: updateContent,
+      value: 'testValue',
     });
-    updatePaneList(props.editor.paneList);
   };
+
+  /**
+   * 删除 tab 页节点
+   * @param targetKey tab页key
+   */
   const remove = (targetKey: string): void => {
-    let index = 0;
-    for (; index < props.editor.paneList.length; index++) {
-      const element = props.editor.paneList[index];
-      if (element.key === targetKey) {
-        break;
-      }
-    }
-    props.editor.paneList.splice(index, 1);
-    updatePaneList(props.editor.paneList);
+    const newMap = props.editor.paneMap;
+    // const newList = [...props.editor.paneList];
+    // let index = 0;
+    // for (; index < props.editor.paneList.length; index++) {
+    //   const element = props.editor.paneList[index];
+    //   if (element.key === targetKey) {
+    //     break;
+    //   }
+    // }
+    // newList.splice(index, 1);
+    newMap.delete(targetKey);
+    updatePaneMap(newMap);
   };
-  console.log(props.editor);
   return (
     <Layout>
       <Header
@@ -113,12 +144,13 @@ const PageEditor = (props: IEditorModelProps, state: IState) => {
         </Row>
       </Header>
       <Content>
-        {props.editor.paneList.length > 0 ? (
+        {props.editor.paneMap.size > 0 ? (
           <PageTab
             order={props.editor.order}
             remove={remove}
-            update={updateOrder}
-            paneList={props.editor.paneList}
+            updateOrder={updateOrder}
+            updateContent={updateContent}
+            paneList={Array.from(props.editor.paneMap.values())}
           />
         ) : (
           <Empty
@@ -132,6 +164,7 @@ const PageEditor = (props: IEditorModelProps, state: IState) => {
     </Layout>
   );
 };
+
 export default connect((module: IEditorModelProps) => ({
   editor: module.editor,
 }))(PageEditor);

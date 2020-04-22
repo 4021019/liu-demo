@@ -14,6 +14,7 @@ import {
   DndComponentEnhancer,
 } from 'react-dnd/lib/decorators/interfaces';
 import './style.less';
+import SwitchEditor from '@/components/SwitchEditor';
 
 const { TabPane } = Tabs;
 
@@ -25,7 +26,8 @@ const TYPE = 'TAB';
 interface IEditTabProps {
   // 移除tab
   remove: (targetKey: string) => void;
-  update: (order: string[]) => void;
+  updateOrder: (order: string[]) => void;
+  updateContent: (key: string, content: any) => void;
 }
 
 /**
@@ -73,7 +75,7 @@ interface IPane {
  */
 interface IProps extends IEditTabProps {
   // tab 渲染列表'
-  paneList: IPane[];
+  paneList: Array<any>;
   order: string[];
 }
 
@@ -157,7 +159,7 @@ class DraggableTabs extends React.Component<
     const hoverIndex = newOrder.indexOf(hoverKey);
     newOrder.splice(dragIndex, 1);
     newOrder.splice(hoverIndex, 0, dragKey);
-    this.props.update(newOrder);
+    this.props.updateOrder(newOrder);
   };
 
   renderTabBar = (
@@ -258,7 +260,8 @@ export default class PageTab extends React.Component<IProps> {
       <DraggableTabs
         order={this.props.order}
         setActive={this.setActive}
-        update={this.props.update}
+        updateContent={this.props.updateContent}
+        updateOrder={this.props.updateOrder}
         remove={this.props.remove}
       >
         {this.props.paneList.map(o => {
@@ -268,7 +271,11 @@ export default class PageTab extends React.Component<IProps> {
               closable={this.state.activeKey === o.key}
               key={o.key}
             >
-              {o.content}
+              <SwitchEditor
+                updateContent={o.updateContent}
+                dataKey={o.key}
+                type={o.type}
+              />
             </TabPane>
           );
         })}

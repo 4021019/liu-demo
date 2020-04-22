@@ -30,12 +30,10 @@ const Model: ILayoutModelType = {
         type: 'save',
         payload: payload,
       });
-      console.log('-----');
     },
   },
   reducers: {
     save(state: any, action: any) {
-      console.log(state);
       return {
         ...state,
       };

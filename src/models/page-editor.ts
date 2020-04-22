@@ -5,7 +5,7 @@ export interface IEditorModelProps extends ConnectProps {
 }
 
 export interface IEditorModelState {
-  paneList: any[];
+  paneMap: Map<String, any>;
   order: string[];
 }
 
@@ -23,7 +23,7 @@ export interface IEditorModelType {
 const EditorModel: IEditorModelType = {
   namespace: 'editor',
   state: {
-    paneList: [],
+    paneMap: new Map(),
     order: [],
   },
   effects: {

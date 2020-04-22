@@ -7,7 +7,6 @@ const KEY_F12 = 'F12';
 
 function createWindow() {
   // 创建浏览器窗口
-  console.log(path.join(__dirname, 'preload.ts'));
   const win = new BrowserWindow({
     width: 1366,
     minWidth: 680,
@@ -41,7 +40,6 @@ app.whenReady().then(() => {
     // win.webContents.openDevTools();
     // globalShortcut.register(KEY_F12, () => {
     //   // 打开开发者工具
-    //   console.log('F12 open dev tools');
     //   win.webContents.openDevTools();
     // });
   }

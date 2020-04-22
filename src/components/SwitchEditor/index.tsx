@@ -5,10 +5,8 @@ import React from 'react';
 
 interface PageProps {
   type: 'markdown' | 'codemirror' | 'new';
-}
-
-interface IState {
-  type: 'markdown' | 'codemirror' | 'new';
+  dataKey: string;
+  updateContent: (key: string, content: any) => void;
 }
 
 const gridStyle: React.CSSProperties = {
@@ -16,29 +14,26 @@ const gridStyle: React.CSSProperties = {
   textAlign: 'center',
 };
 
-export default class SwitchEditor extends React.Component<PageProps, IState> {
+export default class SwitchEditor extends React.Component<PageProps> {
   constructor(props: PageProps) {
     super(props);
-    this.state = {
-      type: props.type,
-    };
   }
 
   render() {
     return (
       <div>
-        {(key => {
-          switch (key) {
+        {(type => {
+          switch (type) {
             case 'codemirror':
-              return <CodeEditor value={key} renderMerge={true} />;
+              return <CodeEditor value={'test'} renderMerge={true} />;
             case 'markdown':
-              return <div>{this.state.type}</div>;
+              return <div>{type}</div>;
             default:
               return (
                 <Card title={'test'}>
                   <div
                     onClick={() => {
-                      this.setState({
+                      this.props.updateContent(this.props.dataKey, {
                         type: 'markdown',
                       });
                     }}
@@ -47,7 +42,7 @@ export default class SwitchEditor extends React.Component<PageProps, IState> {
                   </div>
                   <div
                     onClick={() => {
-                      this.setState({
+                      this.props.updateContent(this.props.dataKey, {
                         type: 'codemirror',
                       });
                     }}
@@ -58,7 +53,7 @@ export default class SwitchEditor extends React.Component<PageProps, IState> {
                 </Card>
               );
           }
-        })(this.state.type)}
+        })(this.props.type)}
       </div>
     );
   }
