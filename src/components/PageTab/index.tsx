@@ -1,83 +1,20 @@
+import SwitchEditor from '@/components/SwitchEditor';
 import { Tabs } from 'antd';
 import { TabsProps } from 'antd/lib/tabs';
-import React, { ComponentType, ReactElement } from 'react';
-import {
-  DndProvider,
-  DragElementWrapper,
-  DragSource,
-  DragSourceOptions,
-  DropTarget,
-} from 'react-dnd';
+import React, { ReactElement } from 'react';
+import { DndProvider, DragSource, DropTarget } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import {
-  DndComponentClass,
-  DndComponentEnhancer,
-} from 'react-dnd/lib/decorators/interfaces';
 import './style.less';
-import SwitchEditor from '@/components/SwitchEditor';
+import IProps, {
+  DndDragMethod,
+  IDraggableTabProps,
+  ITagNodeProps,
+  WrapTabNodeType,
+  TYPE,
+  MtdMove,
+} from './type';
 
 const { TabPane } = Tabs;
-
-const TYPE = 'TAB';
-
-/**
- * tab 编辑
- */
-interface IEditTabProps {
-  // 移除tab
-  remove: (targetKey: string) => void;
-  updateOrder: (order: string[]) => void;
-  updateContent: (key: string, content: any) => void;
-}
-
-/**
- * 拖拽 tab 节点
- */
-interface ITagNodeProps {
-  index: string;
-  key: string;
-  move: (dragKey: string, hoverKey: string) => void;
-  children: any;
-  connectDragSource: DragElementWrapper<any>;
-  connectDropTarget: DragElementWrapper<any>;
-  isOver: boolean;
-  isDragging: boolean;
-}
-
-type WrapTabNodeType = DndComponentClass<
-  DndComponentClass<ComponentType<ITagNodeProps>, ITagNodeProps>,
-  Pick<ITagNodeProps, 'children' | 'index' | 'move' | 'key'>
->;
-
-/**
- * 拖拽 tab 面板
- */
-interface IDraggableTabProps extends IEditTabProps {
-  children: any;
-  order: string[];
-  setActive: (key: string) => void;
-}
-
-/**
- * tab 面板参数类型
- */
-interface IPane {
-  // tab title
-  tab: string;
-  // tab 唯一 key
-  key: string;
-  // tab 本体内容 eg：<div>123</div>
-  content: any;
-}
-
-/**
- * 组件参数类型
- */
-interface IProps extends IEditTabProps {
-  // tab 渲染列表'
-  paneList: Array<any>;
-  order: string[];
-}
 
 class TabNode extends React.Component<ITagNodeProps> {
   render() {
@@ -120,13 +57,14 @@ const targetSpec = {
   },
 };
 
-const dragMethod: DndComponentEnhancer<{
-  connectDragSource: DragElementWrapper<DragSourceOptions>;
-  isDragging: boolean;
-}> = DragSource(TYPE, sourceSpec, (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging(),
-}));
+const dragMethod: DndDragMethod = DragSource(
+  TYPE,
+  sourceSpec,
+  (connect, monitor) => ({
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging(),
+  }),
+);
 const dropMethod = DropTarget(TYPE, targetSpec, (connect, monitor) => ({
   isOver: monitor.isOver(),
   connectDropTarget: connect.dropTarget(),
@@ -134,19 +72,12 @@ const dropMethod = DropTarget(TYPE, targetSpec, (connect, monitor) => ({
 
 const WrapTabNode: WrapTabNodeType = dragMethod(dropMethod(TabNode));
 
-interface IDraggableTabState {
-  // todo 移除
-}
-
-class DraggableTabs extends React.Component<
-  IDraggableTabProps,
-  IDraggableTabState
-> {
+class DraggableTabs extends React.Component<IDraggableTabProps> {
   constructor(props: IDraggableTabProps) {
     super(props);
   }
 
-  move = (dragKey: string, hoverKey: string): void => {
+  move: MtdMove = (dragKey, hoverKey) => {
     const newOrder: string[] = this.props.order.slice();
     const { children } = this.props;
     React.Children.forEach<ITagNodeProps>(children, c => {
@@ -235,6 +166,7 @@ class DraggableTabs extends React.Component<
 }
 
 export default class PageTab extends React.Component<IProps> {
+  // todo 默认激活tab逻辑需要改，当前默认无论什么情况都是第一个不合理
   state = {
     activeKey:
       this.props.paneList.length > 0 ? this.props.paneList[0].key : null,

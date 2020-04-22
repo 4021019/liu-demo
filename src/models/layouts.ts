@@ -35,7 +35,7 @@ const Model: ILayoutModelType = {
   reducers: {
     save(state: any, action: any) {
       return {
-        ...state,
+        ...action.payload,
       };
     },
   },

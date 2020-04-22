@@ -1,11 +1,12 @@
 import { Effect, Reducer, Subscription, ConnectProps } from 'umi';
+import { IPane } from '@/components/PageTab';
 
 export interface IEditorModelProps extends ConnectProps {
   editor: IEditorModelState;
 }
 
 export interface IEditorModelState {
-  paneMap: Map<String, any>;
+  paneMap: Map<String, IPane>;
   order: string[];
 }
 

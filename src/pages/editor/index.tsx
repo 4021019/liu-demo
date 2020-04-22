@@ -1,5 +1,4 @@
-import PageTab from '@/components/PageTab';
-import SwitchEditor from '@/components/SwitchEditor';
+import PageTab, { IPane } from '@/components/PageTab';
 import { fs, os } from '@/config/SystemConfig.ts';
 import { IEditorModelProps } from '@/models/page-editor';
 import { fileId } from '@/util/FileUtil';
@@ -27,7 +26,7 @@ const PageEditor = (props: IEditorModelProps) => {
    * 更新 tab 页面内容
    * @param list 新list
    */
-  const updatePaneMap = (map: Map<String, any>): void => {
+  const updatePaneMap = (map: Map<String, IPane>): void => {
     dispatch({
       type: 'editor/update',
       payload: {
@@ -37,7 +36,7 @@ const PageEditor = (props: IEditorModelProps) => {
     });
   };
 
-  const updateContent = (key: string, content: any): void => {
+  const updateContent = (key: string, content: IPane): void => {
     console.log(key);
     const newMap = props.editor.paneMap;
     const old = newMap.get(key);
@@ -73,7 +72,7 @@ const PageEditor = (props: IEditorModelProps) => {
       key: key,
       type: 'new',
       updateContent: updateContent,
-      value: 'testValue',
+      // value: 'testValue',
     });
   };
 
