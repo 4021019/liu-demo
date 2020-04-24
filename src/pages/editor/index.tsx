@@ -1,12 +1,11 @@
 import PageTab from '@/components/PageTab';
-import { fs, os } from '@/config/SystemConfig.ts';
+import { IPane } from '@/components/PageTab/type';
 import { IEditorModelProps } from '@/models/page-editor';
 import { fileId } from '@/util/FileUtil';
 import { PlusSquareOutlined } from '@ant-design/icons';
 import { Col, Empty, Layout, Row, Switch, Tabs } from 'antd';
 import React from 'react';
-import { connect, useDispatch, getDvaApp } from 'umi';
-import { IPane } from '@/components/PageTab/type';
+import { connect, useDispatch } from 'umi';
 
 const { Header, Sider, Content } = Layout;
 const { TabPane } = Tabs;
@@ -71,7 +70,7 @@ const PageEditor = (props: IEditorModelProps) => {
       key: key,
       type: 'new',
       updateContent: updateContent,
-      // value: 'testValue',
+      value: 'testValue',
     });
   };
 

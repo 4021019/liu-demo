@@ -4,6 +4,7 @@ import './codemirror.less';
 import './diff_match_patch.js';
 import 'codemirror/addon/merge/merge.js';
 import 'codemirror/mode/javascript/javascript.js';
+import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/mode/clike/clike.js';
 import 'codemirror/theme/material.css';
 import 'codemirror/theme/idea.css';
@@ -22,9 +23,11 @@ interface IState {
 
 interface IProps {
   value: string;
+  mode: 'text/x-markdown' | 'text/x-java';
   renderMerge: boolean;
   onScroll?: any;
   saveValue: (value: string) => boolean;
+  changeValue?: (value: string) => void;
 }
 
 export default class CodeEditor extends React.Component<IProps, IState> {
@@ -74,6 +77,14 @@ export default class CodeEditor extends React.Component<IProps, IState> {
       this.merge.rightOriginal().setOption('theme', 'material');
     }
   };
+
+  onChange = (editor: any, data: any, value: string) => {
+    const { changeValue } = this.props;
+    if (changeValue) {
+      changeValue(value);
+    }
+  };
+
   render() {
     return (
       <div>
@@ -85,7 +96,7 @@ export default class CodeEditor extends React.Component<IProps, IState> {
             onScroll={this.props.onScroll}
             value={this.state.value}
             options={{
-              mode: 'text/x-java',
+              mode: this.props.mode,
               theme: 'material',
               lineNumbers: true,
             }}
@@ -93,7 +104,7 @@ export default class CodeEditor extends React.Component<IProps, IState> {
               this.setState({ value });
               this.merge ? this.merge.editor().setValue(value) : null;
             }}
-            onChange={(editor, data, value) => {}}
+            onChange={this.onChange}
           />
         ) : (
           <div ref={this.mergeRef} />

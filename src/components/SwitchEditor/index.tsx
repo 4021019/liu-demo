@@ -1,6 +1,7 @@
 import CodeEditor from '@/components/CodeEditor';
 import { Card } from 'antd';
 import React from 'react';
+import MdEditor from '../MdEditor';
 // import { ConnectProps } from 'umi';
 
 interface PageProps {
@@ -37,7 +38,7 @@ export default (props: PageProps) => {
               />
             );
           case 'markdown':
-            return <div>{type}</div>;
+            return <MdEditor />;
           default:
             return (
               <Card title={'test'}>
