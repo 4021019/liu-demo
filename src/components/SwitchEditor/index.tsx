@@ -5,6 +5,7 @@ import React from 'react';
 
 interface PageProps {
   type: 'markdown' | 'codemirror' | 'new';
+  value: string;
   dataKey: string;
   updateContent: (key: string, content: any) => void;
 }
@@ -14,47 +15,55 @@ const gridStyle: React.CSSProperties = {
   textAlign: 'center',
 };
 
-export default class SwitchEditor extends React.Component<PageProps> {
-  constructor(props: PageProps) {
-    super(props);
-  }
+export default (props: PageProps) => {
+  const saveValue = (value: string): boolean => {
+    props.updateContent(props.dataKey, {
+      value: value,
+    });
+    // todo 增加返回值
+    return true;
+  };
 
-  render() {
-    return (
-      <div>
-        {(type => {
-          switch (type) {
-            case 'codemirror':
-              return <CodeEditor value={'test'} renderMerge={true} />;
-            case 'markdown':
-              return <div>{type}</div>;
-            default:
-              return (
-                <Card title={'test'}>
-                  <div
-                    onClick={() => {
-                      this.props.updateContent(this.props.dataKey, {
-                        type: 'markdown',
-                      });
-                    }}
-                  >
-                    <Card.Grid style={gridStyle}>markdown</Card.Grid>
-                  </div>
-                  <div
-                    onClick={() => {
-                      this.props.updateContent(this.props.dataKey, {
-                        type: 'codemirror',
-                      });
-                    }}
-                  >
-                    <Card.Grid style={gridStyle}>codemirror</Card.Grid>
-                  </div>
-                  <Card.Grid style={gridStyle}>waiting...</Card.Grid>
-                </Card>
-              );
-          }
-        })(this.props.type)}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      {(type => {
+        switch (type) {
+          case 'codemirror':
+            return (
+              <CodeEditor
+                saveValue={saveValue}
+                value={props.value}
+                renderMerge={true}
+              />
+            );
+          case 'markdown':
+            return <div>{type}</div>;
+          default:
+            return (
+              <Card title={'test'}>
+                <div
+                  onClick={() => {
+                    props.updateContent(props.dataKey, {
+                      type: 'markdown',
+                    });
+                  }}
+                >
+                  <Card.Grid style={gridStyle}>markdown</Card.Grid>
+                </div>
+                <div
+                  onClick={() => {
+                    props.updateContent(props.dataKey, {
+                      type: 'codemirror',
+                    });
+                  }}
+                >
+                  <Card.Grid style={gridStyle}>codemirror</Card.Grid>
+                </div>
+                <Card.Grid style={gridStyle}>waiting...</Card.Grid>
+              </Card>
+            );
+        }
+      })(props.type)}
+    </div>
+  );
+};

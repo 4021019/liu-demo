@@ -204,6 +204,7 @@ export default class PageTab extends React.Component<IProps> {
               key={o.key}
             >
               <SwitchEditor
+                value={o.value}
                 updateContent={o.updateContent}
                 dataKey={o.key}
                 type={o.type}

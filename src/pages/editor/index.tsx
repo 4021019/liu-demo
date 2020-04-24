@@ -1,15 +1,15 @@
-import PageTab, { IPane } from '@/components/PageTab';
+import PageTab from '@/components/PageTab';
 import { fs, os } from '@/config/SystemConfig.ts';
 import { IEditorModelProps } from '@/models/page-editor';
 import { fileId } from '@/util/FileUtil';
 import { PlusSquareOutlined } from '@ant-design/icons';
 import { Col, Empty, Layout, Row, Switch, Tabs } from 'antd';
 import React from 'react';
-import { connect, useDispatch } from 'umi';
+import { connect, useDispatch, getDvaApp } from 'umi';
+import { IPane } from '@/components/PageTab/type';
 
 const { Header, Sider, Content } = Layout;
 const { TabPane } = Tabs;
-const d = fs.readFileSync(os.homedir() + '/test.json', 'utf-8');
 
 interface IState {
   renderMerge: boolean;
@@ -21,7 +21,6 @@ const gridStyle = {
 
 const PageEditor = (props: IEditorModelProps) => {
   const dispatch = useDispatch();
-
   /**
    * 更新 tab 页面内容
    * @param list 新list

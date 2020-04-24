@@ -24,6 +24,7 @@ interface IProps {
   value: string;
   renderMerge: boolean;
   onScroll?: any;
+  saveValue: (value: string) => boolean;
 }
 
 export default class CodeEditor extends React.Component<IProps, IState> {
@@ -78,7 +79,10 @@ export default class CodeEditor extends React.Component<IProps, IState> {
       <div>
         {this.props.renderMerge ? (
           <CodeMirror
-            onScroll = {this.props.onScroll}
+            onBlur={(codemirror, event) => {
+              this.props.saveValue(this.state.value);
+            }}
+            onScroll={this.props.onScroll}
             value={this.state.value}
             options={{
               mode: 'text/x-java',

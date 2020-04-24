@@ -21,11 +21,14 @@ export type DndDragMethod = DndComponentEnhancer<{
   isDragging: boolean;
 }>;
 
+export type MtdMove = (dragKey: string, hoverKey: string) => void;
+export type MtdUpdateContent = (key: string, content: IPane) => void;
+
 /**
  * tabs 内元素更新
  */
 export interface IUpdateContent {
-  updateContent: (key: string, content: IPane) => void;
+  updateContent: MtdUpdateContent;
 }
 
 /**
@@ -36,8 +39,10 @@ export interface IPane extends IUpdateContent {
   tab: string;
   // tab 唯一 key
   key: string;
-  // tab 本体内容 eg：<div>123</div>
+  // 页面类型
   type: 'new' | 'markdown' | 'codemirror';
+  // 页面文本
+  value: string;
 }
 
 /**

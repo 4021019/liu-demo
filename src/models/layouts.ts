@@ -22,7 +22,7 @@ export interface ILayoutModelType {
 const Model: ILayoutModelType = {
   namespace: 'layouts',
   state: {
-    name: '',
+    name: 'liuwentao',
   },
   effects: {
     *xxx({ payload }, { call, put }) {

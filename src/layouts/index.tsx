@@ -1,11 +1,8 @@
-import { UserOutlined } from '@ant-design/icons';
-import { Anchor, Layout, Menu, notification, Dropdown } from 'antd';
+import { SmileOutlined, UserOutlined } from '@ant-design/icons';
+import { Anchor, Button, Layout, Menu, notification, Result } from 'antd';
 import React from 'react';
 import { Rnd } from 'react-rnd';
-import { history } from 'umi';
-import { Result, Button } from 'antd';
-import { SmileOutlined } from '@ant-design/icons';
-import { connect, ILayoutModelProps } from 'umi';
+import { connect, history, ILayoutModelProps, getDvaApp } from 'umi';
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -55,31 +52,9 @@ class MyLayout extends React.Component<any, any> {
   };
 
   render() {
-    console.log(this.props);
-    if (this.props.location.pathname === '/') {
-      return (
-        <Result
-          style={{
-            paddingTop: '150px',
-          }}
-          icon={<SmileOutlined />}
-          title="Hello World"
-          extra={
-            <Button
-              onClick={() => {
-                history.push('/editor');
-              }}
-              type="primary"
-            >
-              Start
-            </Button>
-          }
-        />
-      );
-    }
     return (
       <div
-        tabIndex={999}
+        tabIndex={1000}
         onKeyDown={e => {
           if (e.metaKey && e.keyCode === 83) {
             console.log(this.props.layouts);
@@ -93,127 +68,147 @@ class MyLayout extends React.Component<any, any> {
               description: 'nice',
               duration: 1,
               onClick: () => {
-                console.log('Notification Clicked!');
+                console.log(new Date().getTime());
               },
             });
           }
         }}
       >
-        <Anchor>
-          <Rnd
-            className="drag-and-drop"
-            ref={c => {
-              this.rnd = c;
+        {this.props.location.pathname === '/' ? (
+          <Result
+            style={{
+              paddingTop: '150px',
             }}
-            dragAxis="x"
-            bounds="parent"
-            position={{ x: this.state.x1, y: 0 }}
-            enableResizing={{}}
-            size={{ width: '5px', height: '100vh' }}
-            onDragStop={(e, d) => {
-              if (d.x <= 100) {
-                this.toggleMin();
-              } else {
-                this.setWidth(d.x);
-                this.open();
-              }
-            }}
+            icon={<SmileOutlined />}
+            title="Hello World"
+            extra={
+              <Button
+                onClick={() => {
+                  history.push('/editor');
+                }}
+                type="primary"
+              >
+                Start
+              </Button>
+            }
           />
-          <Layout>
-            <Sider
-              theme="light"
-              style={{
-                overflow: 'auto',
-                height: '100vh',
-                position: 'fixed',
-                left: 0,
+        ) : (
+          <Anchor>
+            <Rnd
+              className="drag-and-drop"
+              ref={c => {
+                this.rnd = c;
               }}
-              collapsed={this.state.collapsed}
-              width={this.state.x1}
-            >
-              <Menu mode="inline" defaultSelectedKeys={['4']}>
-                <SubMenu
-                  key="sub1"
-                  title={
-                    <span>
-                      <UserOutlined />
-                      <span>子菜单测试</span>
-                    </span>
-                  }
-                >
-                  <Menu.Item key="sub1-1">Option 1</Menu.Item>
-                  <Menu.Item key="sub1-2">Option 2</Menu.Item>
-                </SubMenu>
-
-                <Menu.Item
-                  key="1"
-                  onClick={() => {
-                    history.push('/test');
-                  }}
-                >
-                  <UserOutlined />
-                  <span>test page</span>
-                </Menu.Item>
-                <Menu.Item
-                  key="2"
-                  onClick={() => {
-                    history.push('/editor');
-                  }}
-                >
-                  <UserOutlined />
-                  <span>代码编辑页面(home)</span>
-                </Menu.Item>
-                <Menu.Item key="3" onClick={this.toggleMin}>
-                  <UserOutlined />
-                  <span>侧边栏收回</span>
-                </Menu.Item>
-                <Menu.Item
-                  key="4"
-                  onClick={() => {
-                    history.push('/setting');
-                  }}
-                >
-                  <UserOutlined />
-                  <span>setting</span>
-                </Menu.Item>
-                <Menu.Item
-                  key="5"
-                  onClick={() => {
-                    history.push('/move');
-                  }}
-                >
-                  <UserOutlined />
-                  <span>拖拽测试</span>
-                </Menu.Item>
-                <Menu.Item
-                  key="6"
-                  onClick={() => {
-                    history.push('/move2');
-                  }}
-                >
-                  <UserOutlined />
-                  <span>拖拽测试2</span>
-                </Menu.Item>
-              </Menu>
-            </Sider>
-            <Layout
-              className="site-layout"
-              style={{
-                marginLeft: this.state.x2,
+              dragAxis="x"
+              bounds="parent"
+              position={{ x: this.state.x1, y: 0 }}
+              enableResizing={{}}
+              size={{ width: '5px', height: '100vh' }}
+              onDragStop={(e, d) => {
+                if (d.x <= 100) {
+                  this.toggleMin();
+                } else {
+                  this.setWidth(d.x);
+                  this.open();
+                }
               }}
-            >
-              <Content
+            />
+            <Layout>
+              <Sider
+                theme="light"
                 style={{
-                  overflow: 'initial',
+                  overflow: 'auto',
+                  height: '100vh',
+                  position: 'fixed',
+                  left: 0,
+                }}
+                collapsed={this.state.collapsed}
+                width={this.state.x1}
+              >
+                <Menu mode="inline" defaultSelectedKeys={['4']}>
+                  <SubMenu
+                    key="sub1"
+                    title={
+                      <span>
+                        <UserOutlined />
+                        <span>子菜单测试</span>
+                      </span>
+                    }
+                  >
+                    <Menu.Item key="sub1-1">Option 1</Menu.Item>
+                    <Menu.Item key="sub1-2">Option 2</Menu.Item>
+                  </SubMenu>
+
+                  <Menu.Item
+                    key="1"
+                    onClick={() => {
+                      history.push('/test');
+                    }}
+                  >
+                    <UserOutlined />
+                    <span>test page</span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="2"
+                    onClick={() => {
+                      history.push('/editor');
+                    }}
+                  >
+                    <UserOutlined />
+                    <span>代码编辑页面(home)</span>
+                  </Menu.Item>
+                  <Menu.Item key="3" onClick={this.toggleMin}>
+                    <UserOutlined />
+                    <span>侧边栏收回</span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="4"
+                    onClick={() => {
+                      history.push('/setting');
+                    }}
+                  >
+                    <UserOutlined />
+                    <span>setting</span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="5"
+                    onClick={() => {
+                      history.push('/move');
+                    }}
+                  >
+                    <UserOutlined />
+                    <span>拖拽测试</span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="6"
+                    onClick={() => {
+                      history.push('/move2');
+                    }}
+                  >
+                    <UserOutlined />
+                    <span>拖拽测试2</span>
+                  </Menu.Item>
+                </Menu>
+              </Sider>
+              <Layout
+                className="site-layout"
+                style={{
+                  marginLeft: this.state.x2,
                 }}
               >
-                <div className="site-layout-background">
-                  {this.props.children}
-                </div>
-              </Content>
+                <Content
+                  style={{
+                    overflow: 'initial',
+                  }}
+                >
+                  <div className="site-layout-background">
+                    {this.props.children}
+                  </div>
+                </Content>
+              </Layout>
             </Layout>
-          </Layout>
-        </Anchor>
+          </Anchor>
+        )}
       </div>
     );
   }
