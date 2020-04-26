@@ -32,6 +32,8 @@ export default (props: PageProps) => {
           case 'codemirror':
             return (
               <CodeEditor
+                mode="text/x-java"
+                theme="idea"
                 saveValue={saveValue}
                 value={props.value}
                 renderMerge={true}

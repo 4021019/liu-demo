@@ -19,11 +19,13 @@ const { Header, Content, Footer } = Layout;
 interface IState {
   value: string;
   isRenderMerge: boolean;
+  optons: cdm.EditorConfiguration;
 }
 
 interface IProps {
   value: string;
   mode: 'text/x-markdown' | 'text/x-java';
+  theme: 'material' | 'idea';
   renderMerge: boolean;
   onScroll?: any;
   saveValue: (value: string) => boolean;
@@ -38,6 +40,11 @@ export default class CodeEditor extends React.Component<IProps, IState> {
     this.state = {
       value: props.value,
       isRenderMerge: this.props.renderMerge,
+      optons: {
+        mode: this.props.mode,
+        theme: this.props.theme,
+        lineNumbers: true,
+      },
     };
     this.mergeRef = createRef();
   }
@@ -73,8 +80,15 @@ export default class CodeEditor extends React.Component<IProps, IState> {
         let value = editor.getValue();
         this.setState({ value });
       });
-      this.merge.editor().setOption('theme', 'material');
-      this.merge.rightOriginal().setOption('theme', 'material');
+      const optons = this.state.optons;
+      for (const k in optons) {
+        if (optons.hasOwnProperty(k)) {
+          const key: keyof cdm.EditorConfiguration = k as keyof cdm.EditorConfiguration;
+          const element = optons[key];
+          this.merge.editor().setOption(key, optons[key]);
+          this.merge.rightOriginal().setOption(key, optons[key]);
+        }
+      }
     }
   };
 
@@ -95,11 +109,7 @@ export default class CodeEditor extends React.Component<IProps, IState> {
             }}
             onScroll={this.props.onScroll}
             value={this.state.value}
-            options={{
-              mode: this.props.mode,
-              theme: 'material',
-              lineNumbers: true,
-            }}
+            options={this.state.optons}
             onBeforeChange={(editor, data, value) => {
               this.setState({ value });
               this.merge ? this.merge.editor().setValue(value) : null;

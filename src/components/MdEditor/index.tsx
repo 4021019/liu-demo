@@ -1,10 +1,11 @@
-import React, { createRef } from 'react';
-import MarkdownIt from 'markdown-it';
-import Token from 'markdown-it/lib/token';
-import Renderer from 'markdown-it/lib/renderer';
-import { unescapeAll, escapeHtml } from './utils.js';
-import { Row, Col } from 'antd';
 import CodeEditor from '@/components/CodeEditor';
+import { Col, Row } from 'antd';
+import MarkdownIt from 'markdown-it';
+import Renderer from 'markdown-it/lib/renderer';
+import Token from 'markdown-it/lib/token';
+import React, { createRef } from 'react';
+import { escapeHtml, unescapeAll } from './utils.js';
+import './style.less';
 
 var md = new MarkdownIt();
 
@@ -18,7 +19,6 @@ const line = (
   var line;
   if (tokens[idx].map && tokens[idx].level === 0) {
     line = tokens[idx].map[0];
-    console.log(tokens[idx]);
     tokens[idx].attrJoin('class', 'line');
     tokens[idx].attrSet('data-line', String(line));
   }
@@ -70,7 +70,7 @@ md.renderer.rules.fence = function(tokens, idx, options, env, slf) {
 
     return (
       `<pre class = "line" data-line = "${tokens[idx].map[0]}"><code` +
-      slf.renderAttrs(tmpToken) +
+      slf.renderAttrs(tmpToken as Token) +
       '>' +
       highlighted +
       '</code></pre>\n'
@@ -85,8 +85,6 @@ md.renderer.rules.fence = function(tokens, idx, options, env, slf) {
     '</code></pre>\n'
   );
 };
-
-const text = '# markdown-it rulezz! \n```\n12312312\n123123\n```';
 
 export default class MdEditor extends React.Component<any, any> {
   private editRef: any = createRef();
@@ -106,6 +104,7 @@ export default class MdEditor extends React.Component<any, any> {
         <Row>
           <Col span={12}>
             <CodeEditor
+              theme="idea"
               mode="text/x-markdown"
               changeValue={value => {
                 this.setState({
@@ -122,11 +121,13 @@ export default class MdEditor extends React.Component<any, any> {
             />
           </Col>
           <Col span={12}>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: md.render(this.state.text),
-              }}
-            ></div>
+            <div className="md-view-container">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: md.render(this.state.text),
+                }}
+              />
+            </div>
           </Col>
         </Row>
       </div>

@@ -1,10 +1,19 @@
 @tabs-tab-width: 128px;
 @tabs-tab-height: 28px;
 
+.ant-tabs-bar {
+  margin-bottom: 0 !important;
+}
+
+.ant-tabs-nav-container {
+  height: @tabs-tab-height !important;
+}
+
 .ant-tabs-tab {
   width: @tabs-tab-width !important;
   height: @tabs-tab-height !important;
   line-height: @tabs-tab-height !important;
+  position: fixed;
 }
 
 .tabs-is-dragging {
