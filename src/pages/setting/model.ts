@@ -1,9 +1,5 @@
-import { Effect, Reducer, Subscription } from 'umi';
-import produce, { Draft } from 'immer';
-
 import { systemConfig } from '@/config/SystemConfig';
-import { Action } from 'redux';
-import StateBlock from 'markdown-it/lib/rules_block/state_block';
+import { Effect, Reducer, Subscription } from 'umi';
 
 export type ISettingModelProps = {
   setting: ISettingModelState;

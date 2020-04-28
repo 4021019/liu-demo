@@ -9,7 +9,6 @@ import { PlusSquareOutlined } from '@ant-design/icons';
 
 const { Header, Sider, Content } = Layout;
 const { TabPane } = Tabs;
-const d = fs.readFileSync(os.homedir() + '/test.json', 'utf-8');
 
 interface IState {
   renderMerge: boolean;

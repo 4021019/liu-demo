@@ -1,49 +1,36 @@
+import Tool from '@/components/EditorTool';
 import PageTab from '@/components/PageTab';
 import { IPane } from '@/components/PageTab/type';
-import { IEditorModelProps } from '@/models/page-editor';
 import { fileId } from '@/util/FileUtil';
 import { PlusSquareOutlined } from '@ant-design/icons';
-import { Col, Empty, Layout, Row, Switch, Tabs } from 'antd';
+import { Col, Drawer, Empty, Layout, Row, Switch } from 'antd';
+import _ from 'lodash';
 import React from 'react';
 import { connect, useDispatch } from 'umi';
+import { IEditorModelProps } from './type';
 
-const { Header, Sider, Content } = Layout;
-const { TabPane } = Tabs;
-
-interface IState {
-  renderMerge: boolean;
-}
-const gridStyle = {
-  width: '100%',
-  textAlign: 'center',
-};
+const { Header, Content } = Layout;
 
 const PageEditor = (props: IEditorModelProps) => {
   const dispatch = useDispatch();
-  /**
-   * 更新 tab 页面内容
-   * @param list 新list
-   */
-  const updatePaneMap = (map: Map<String, IPane>): void => {
+
+  const updateOne = (key: string, content: IPane): void => {
     dispatch({
-      type: 'editor/update',
+      type: 'editor/updateOne',
       payload: {
-        ...props.editor,
-        paneMap: map,
+        key: key,
+        content: content,
       },
     });
   };
 
-  const updateContent = (key: string, content: IPane): void => {
-    console.log(key);
-    const newMap = props.editor.paneMap;
-    const old = newMap.get(key);
-    newMap.delete(key);
-    newMap.set(key, {
-      ...old,
-      ...content,
+  const setActive = (key: string): void => {
+    dispatch({
+      type: 'editor/update',
+      payload: {
+        activeKey: key,
+      },
     });
-    updatePaneMap(newMap);
   };
 
   /**
@@ -54,7 +41,6 @@ const PageEditor = (props: IEditorModelProps) => {
     dispatch({
       type: 'editor/update',
       payload: {
-        ...props.editor,
         order: list,
       },
     });
@@ -65,12 +51,28 @@ const PageEditor = (props: IEditorModelProps) => {
    */
   const add = (): void => {
     const key = fileId();
-    updateContent(key, {
+    const { order } = props.editor;
+    const newMap = _.clone(props.editor.paneMap);
+    const old = newMap.get(key);
+    const content = {
       tab: key,
       key: key,
       type: 'new',
-      updateContent: updateContent,
+      updateContent: updateOne,
       value: 'testValue',
+    };
+    newMap.delete(key);
+    newMap.set(key, {
+      ...old,
+      ...content,
+    });
+    dispatch({
+      type: 'editor/update',
+      payload: {
+        activeKey: key,
+        paneMap: newMap,
+        order: [...order, key],
+      },
     });
   };
 
@@ -79,86 +81,89 @@ const PageEditor = (props: IEditorModelProps) => {
    * @param targetKey tab页key
    */
   const remove = (targetKey: string): void => {
-    const newMap = props.editor.paneMap;
-    // const newList = [...props.editor.paneList];
-    // let index = 0;
-    // for (; index < props.editor.paneList.length; index++) {
-    //   const element = props.editor.paneList[index];
-    //   if (element.key === targetKey) {
-    //     break;
-    //   }
-    // }
-    // newList.splice(index, 1);
+    const { paneMap, order } = props.editor;
+    const newMap = _.clone(paneMap);
+    const newOrder = [...order];
+    _.remove(newOrder, o => o === targetKey);
     newMap.delete(targetKey);
-    updatePaneMap(newMap);
+    dispatch({
+      type: 'editor/update',
+      payload: {
+        activeKey: order.filter((o, i, arr) => arr[i + 1] === targetKey)[0],
+        order: newOrder,
+        paneMap: newMap,
+      },
+    });
   };
+
+  const { paneMap } = props.editor;
+  let { activeKey, order } = props.editor;
+  if (paneMap.size === 1) {
+    activeKey = paneMap.keys().next().value;
+  }
   return (
-    <Layout>
-      <Header
-        style={{
-          padding: '0px',
-          height: '40px',
-          backgroundColor: 'white',
-          paddingTop: '0px',
-        }}
+    <div>
+      <Drawer
+        title="文档基础信息"
+        placement="right"
+        closable={true}
+        visible={false}
       >
-        <Row>
-          <Col span={24}>
-            <div
-              className="line"
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Drawer>
+      <Layout>
+        <Header
+          style={{
+            padding: '0px',
+            height: '40px',
+            backgroundColor: 'white',
+            paddingTop: '0px',
+          }}
+        >
+          <Row>
+            <Col span={24}>
+              <Tool
+                onClick={e => {
+                  const reply = window
+                    .require('electron')
+                    .ipcRenderer.sendSync('synchronous-message', 'ping');
+                  // this.setState({
+                  //   renderMerge: !this.state.renderMerge,
+                  // });
+                }}
+              >
+                <Switch size="small" defaultChecked />
+              </Tool>
+              <Tool onClick={add}>
+                <PlusSquareOutlined />
+              </Tool>
+            </Col>
+          </Row>
+        </Header>
+        <Content>
+          {paneMap.size > 0 ? (
+            <PageTab
+              setActive={setActive}
+              order={order}
+              activeKey={activeKey}
+              remove={remove}
+              updateOrder={updateOrder}
+              updateContent={updateOne}
+              paneList={Array.from(paneMap.values())}
+            />
+          ) : (
+            <Empty
+              description="点击左上角[+]创建新的文件"
               style={{
-                width: '40px',
-                float: 'left',
-                textAlign: 'center',
-                lineHeight: '40px',
-                textAnchor: 'middle',
+                lineHeight: '80vh',
               }}
-              onClick={e => {
-                const reply = window
-                  .require('electron')
-                  .ipcRenderer.sendSync('synchronous-message', 'ping');
-                // this.setState({
-                //   renderMerge: !this.state.renderMerge,
-                // });
-              }}
-            >
-              <Switch size="small" defaultChecked />
-            </div>
-            <div
-              className="line"
-              style={{
-                width: '40px',
-                float: 'left',
-                textAlign: 'center',
-                lineHeight: '40px',
-                textAnchor: 'middle',
-              }}
-              onClick={add}
-            >
-              <PlusSquareOutlined />
-            </div>
-          </Col>
-        </Row>
-      </Header>
-      <Content>
-        {props.editor.paneMap.size > 0 ? (
-          <PageTab
-            order={props.editor.order}
-            remove={remove}
-            updateOrder={updateOrder}
-            updateContent={updateContent}
-            paneList={Array.from(props.editor.paneMap.values())}
-          />
-        ) : (
-          <Empty
-            description="点击左上角[+]创建新的文件"
-            style={{
-              lineHeight: '80vh',
-            }}
-          />
-        )}
-      </Content>
-    </Layout>
+            />
+          )}
+        </Content>
+      </Layout>
+    </div>
   );
 };
 

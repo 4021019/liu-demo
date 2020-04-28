@@ -6,6 +6,7 @@ import Token from 'markdown-it/lib/token';
 import React, { createRef } from 'react';
 import { escapeHtml, unescapeAll } from './utils.js';
 import './style.less';
+import { IProps, IState } from './type.js';
 
 var md = new MarkdownIt();
 
@@ -86,19 +87,16 @@ md.renderer.rules.fence = function(tokens, idx, options, env, slf) {
   );
 };
 
-export default class MdEditor extends React.Component<any, any> {
+export default class MdEditor extends React.Component<IProps, IState> {
   private editRef: any = createRef();
-
-  constructor(props: any) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      text: '',
+      text: this.props.value,
     };
   }
-
-  componentDidMount() {}
-
   render() {
+    const { saveValue } = this.props;
     return (
       <div>
         <Row>
@@ -111,7 +109,7 @@ export default class MdEditor extends React.Component<any, any> {
                   text: value,
                 });
               }}
-              saveValue={() => true}
+              saveValue={saveValue}
               onScroll={() => {
                 console.log('123123');
               }}

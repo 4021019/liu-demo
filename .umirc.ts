@@ -4,7 +4,4 @@ export default {
   runtimePublicPath: true,
   publicPath: './',
   outputPath: 'app/dist',
-  dva: {
-    immer: true,
-  },
 };

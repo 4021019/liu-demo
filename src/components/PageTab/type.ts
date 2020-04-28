@@ -52,6 +52,7 @@ export interface IEditTabProps extends IUpdateContent {
   // 移除tab
   remove: (targetKey: string) => void;
   updateOrder: (order: string[]) => void;
+  setActive: (key: string) => void;
 }
 
 /**
@@ -73,6 +74,7 @@ export interface ITagNodeProps {
  */
 export interface IDraggableTabProps extends IEditTabProps {
   children: any;
+  activeKey: string;
   order: string[];
   setActive: (key: string) => void;
 }
@@ -85,4 +87,5 @@ export default interface IProps extends IEditTabProps {
   paneList: Array<IPane>;
   // 渲染顺序
   order: string[];
+  activeKey: string;
 }

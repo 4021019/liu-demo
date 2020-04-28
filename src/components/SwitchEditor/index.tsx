@@ -24,7 +24,7 @@ export default (props: PageProps) => {
     // todo 增加返回值
     return true;
   };
-
+  const { value } = props;
   return (
     <div>
       {(type => {
@@ -35,12 +35,12 @@ export default (props: PageProps) => {
                 mode="text/x-java"
                 theme="idea"
                 saveValue={saveValue}
-                value={props.value}
+                value={value}
                 renderMerge={true}
               />
             );
           case 'markdown':
-            return <MdEditor />;
+            return <MdEditor value={value} saveValue={saveValue} />;
           default:
             return (
               <Card title={'test'}>

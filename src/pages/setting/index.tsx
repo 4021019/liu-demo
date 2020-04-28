@@ -1,6 +1,7 @@
 import { Divider, List } from 'antd';
 import React from 'react';
-import { connect, ISettingModelProps } from 'umi';
+import { connect } from 'umi';
+import { ISettingModelProps } from './model';
 
 interface IProps extends ISettingModelProps {}
 

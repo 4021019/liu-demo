@@ -9,9 +9,9 @@ import IProps, {
   DndDragMethod,
   IDraggableTabProps,
   ITagNodeProps,
-  WrapTabNodeType,
-  TYPE,
   MtdMove,
+  TYPE,
+  WrapTabNodeType,
 } from './type';
 
 const { TabPane } = Tabs;
@@ -73,10 +73,6 @@ const dropMethod = DropTarget(TYPE, targetSpec, (connect, monitor) => ({
 const WrapTabNode: WrapTabNodeType = dragMethod(dropMethod(TabNode));
 
 class DraggableTabs extends React.Component<IDraggableTabProps> {
-  constructor(props: IDraggableTabProps) {
-    super(props);
-  }
-
   move: MtdMove = (dragKey, hoverKey) => {
     const newOrder: string[] = this.props.order.slice();
     const { children } = this.props;
@@ -109,7 +105,7 @@ class DraggableTabs extends React.Component<IDraggableTabProps> {
   );
 
   render() {
-    const { children, order } = this.props;
+    const { children, order, activeKey } = this.props;
     const tabs: ITagNodeProps[] = [];
     React.Children.forEach<ITagNodeProps>(children, c => {
       tabs.push(c);
@@ -142,17 +138,9 @@ class DraggableTabs extends React.Component<IDraggableTabProps> {
           onEdit={(targetKey, action) => {
             if ('remove' === action) {
               this.props.remove(targetKey.toString());
-              if (targetKey === orderTabs[0].key) {
-                if (orderTabs.length >= 2) {
-                  this.props.setActive(orderTabs[1].key);
-                }
-              } else {
-                if (orderTabs.length >= 1) {
-                  this.props.setActive(orderTabs[0].key);
-                }
-              }
             }
           }}
+          activeKey={activeKey}
           hideAdd={true}
           type="editable-card"
           renderTabBar={this.renderTabBar}
@@ -165,54 +153,42 @@ class DraggableTabs extends React.Component<IDraggableTabProps> {
   }
 }
 
-export default class PageTab extends React.Component<IProps> {
-  // todo 默认激活tab逻辑需要改，当前默认无论什么情况都是第一个不合理
-  state = {
-    activeKey:
-      this.props.paneList.length > 0 ? this.props.paneList[0].key : null,
-  };
-
-  componentWillReceiveProps(nextProps: IProps) {
-    // 如果 变为 1条数据 则该数据为 active
-    if (nextProps.paneList.length == 1) {
-      this.setState({
-        activeKey: nextProps.paneList[0].key,
-      });
-    }
-  }
-
-  setActive = (key: string): void => {
-    this.setState({
-      activeKey: key,
-    });
-  };
-
-  render() {
-    return (
-      <DraggableTabs
-        order={this.props.order}
-        setActive={this.setActive}
-        updateContent={this.props.updateContent}
-        updateOrder={this.props.updateOrder}
-        remove={this.props.remove}
-      >
-        {this.props.paneList.map(o => {
-          return (
-            <TabPane
-              tab={<div className="tabs-tab-title">{o.tab}</div>}
-              closable={this.state.activeKey === o.key}
+export default (props: IProps) => {
+  const {
+    order,
+    setActive,
+    updateContent,
+    updateOrder,
+    remove,
+    activeKey,
+    paneList,
+  } = props;
+  return (
+    <DraggableTabs
+      order={order}
+      setActive={setActive}
+      updateContent={updateContent}
+      updateOrder={updateOrder}
+      remove={remove}
+      activeKey={activeKey}
+    >
+      {paneList.map(o => {
+        return (
+          <TabPane
+            tab={<div className="tabs-tab-title">{o.tab}</div>}
+            closable={activeKey === o.key}
+            key={o.key}
+          >
+            <SwitchEditor
+              value={o.value}
+              updateContent={o.updateContent}
+              dataKey={o.key}
               key={o.key}
-            >
-              <SwitchEditor
-                value={o.value}
-                updateContent={o.updateContent}
-                dataKey={o.key}
-                type={o.type}
-              />
-            </TabPane>
-          );
-        })}
-      </DraggableTabs>
-    );
-  }
-}
+              type={o.type}
+            />
+          </TabPane>
+        );
+      })}
+    </DraggableTabs>
+  );
+};

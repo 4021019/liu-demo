@@ -53,27 +53,7 @@ class MyLayout extends React.Component<any, any> {
 
   render() {
     return (
-      <div
-        tabIndex={1000}
-        onKeyDown={e => {
-          if (e.metaKey && e.keyCode === 83) {
-            console.log(this.props.layouts);
-            this.props.dispatch({
-              type: 'layouts/xxx',
-              payload: 'liuwentao',
-            });
-            notification.open({
-              key: 'save',
-              message: '保存成功',
-              description: 'nice',
-              duration: 1,
-              onClick: () => {
-                console.log(new Date().getTime());
-              },
-            });
-          }
-        }}
-      >
+      <div>
         {this.props.location.pathname === '/' ? (
           <Result
             style={{
@@ -125,7 +105,11 @@ class MyLayout extends React.Component<any, any> {
                 collapsed={this.state.collapsed}
                 width={this.state.x1}
               >
-                <Menu mode="inline" defaultSelectedKeys={['4']}>
+                <Menu mode="inline" defaultSelectedKeys={['2']}>
+                  <Menu.Item key="3" onClick={this.toggleMin}>
+                    <UserOutlined />
+                    <span>侧边栏收回</span>
+                  </Menu.Item>
                   <SubMenu
                     key="sub1"
                     title={
@@ -138,16 +122,6 @@ class MyLayout extends React.Component<any, any> {
                     <Menu.Item key="sub1-1">Option 1</Menu.Item>
                     <Menu.Item key="sub1-2">Option 2</Menu.Item>
                   </SubMenu>
-
-                  <Menu.Item
-                    key="1"
-                    onClick={() => {
-                      history.push('/test');
-                    }}
-                  >
-                    <UserOutlined />
-                    <span>test page</span>
-                  </Menu.Item>
                   <Menu.Item
                     key="2"
                     onClick={() => {
@@ -155,11 +129,7 @@ class MyLayout extends React.Component<any, any> {
                     }}
                   >
                     <UserOutlined />
-                    <span>代码编辑页面(home)</span>
-                  </Menu.Item>
-                  <Menu.Item key="3" onClick={this.toggleMin}>
-                    <UserOutlined />
-                    <span>侧边栏收回</span>
+                    <span>代码编辑页面</span>
                   </Menu.Item>
                   <Menu.Item
                     key="4"
@@ -178,15 +148,6 @@ class MyLayout extends React.Component<any, any> {
                   >
                     <UserOutlined />
                     <span>拖拽测试</span>
-                  </Menu.Item>
-                  <Menu.Item
-                    key="6"
-                    onClick={() => {
-                      history.push('/move2');
-                    }}
-                  >
-                    <UserOutlined />
-                    <span>拖拽测试2</span>
                   </Menu.Item>
                 </Menu>
               </Sider>
