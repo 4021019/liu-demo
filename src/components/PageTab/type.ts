@@ -28,7 +28,7 @@ export type MtdUpdateContent = (key: string, content: IPane) => void;
  * tabs 内元素更新
  */
 export interface IUpdateContent {
-  updateContent: MtdUpdateContent;
+  updateContent?: MtdUpdateContent;
 }
 
 /**

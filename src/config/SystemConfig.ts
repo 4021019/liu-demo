@@ -76,4 +76,5 @@ export const systemConfig = {
   configname: CONFIG_NAME,
   charset: DEFAULT_CHARSET,
   baseconfig: config,
+  docdir: config.docSetting.baseDir,
 };

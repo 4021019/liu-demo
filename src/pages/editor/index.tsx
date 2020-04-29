@@ -10,8 +10,8 @@ import {
 import { Col, Drawer, Empty, Layout, Row, Switch } from 'antd';
 import _ from 'lodash';
 import React from 'react';
-import { connect } from 'umi';
-import { IProps, IState } from './type';
+import { connect, Loading } from 'umi';
+import { IEditorModelState, IProps, IState } from './type';
 
 const { Header, Content } = Layout;
 
@@ -217,6 +217,9 @@ class PageEditor extends React.Component<IProps, IState> {
   }
 }
 
-export default connect((module: IProps) => ({
-  editor: module.editor,
-}))(PageEditor);
+export default connect(
+  (module: { editor: IEditorModelState; loading: Loading }) => ({
+    editor: module.editor,
+    loading: module.loading,
+  }),
+)(PageEditor);

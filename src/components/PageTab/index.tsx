@@ -181,7 +181,7 @@ export default (props: IProps) => {
           >
             <SwitchEditor
               value={o.value}
-              updateContent={o.updateContent}
+              updateContent={updateContent}
               dataKey={o.key}
               key={o.key}
               type={o.type}

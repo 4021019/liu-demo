@@ -104,14 +104,12 @@ export default class CodeEditor extends React.Component<IProps, IState> {
       <div>
         {this.props.renderMerge ? (
           <CodeMirror
-            onBlur={(codemirror, event) => {
-              this.props.saveValue(this.state.value);
-            }}
             onScroll={this.props.onScroll}
             value={this.state.value}
             options={this.state.optons}
             onBeforeChange={(editor, data, value) => {
               this.setState({ value });
+              this.props.saveValue(this.state.value);
               this.merge ? this.merge.editor().setValue(value) : null;
             }}
             onChange={this.onChange}

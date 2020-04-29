@@ -8,7 +8,7 @@ interface PageProps {
   type: 'markdown' | 'codemirror' | 'new';
   value: string;
   dataKey: string;
-  updateContent: (key: string, content: any) => void;
+  updateContent?: (key: string, content: any) => void;
 }
 
 const gridStyle: React.CSSProperties = {
