@@ -6,7 +6,7 @@ import MdEditor from '../MdEditor';
 
 interface PageProps {
   type: 'markdown' | 'codemirror' | 'new';
-  value: string;
+  value?: string;
   dataKey: string;
   updateContent: (key: string, content: any) => void;
 }
@@ -25,6 +25,7 @@ export default (props: PageProps) => {
     return true;
   };
   const { value } = props;
+  const realValue = value ? value : '';
   return (
     <div>
       {(type => {
@@ -35,12 +36,12 @@ export default (props: PageProps) => {
                 mode="text/x-java"
                 theme="idea"
                 saveValue={saveValue}
-                value={value}
+                value={realValue}
                 renderMerge={true}
               />
             );
           case 'markdown':
-            return <MdEditor value={value} saveValue={saveValue} />;
+            return <MdEditor value={realValue} saveValue={saveValue} />;
           default:
             return (
               <Card title={'test'}>
