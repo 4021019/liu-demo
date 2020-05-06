@@ -1,9 +1,15 @@
-import { app, BrowserWindow, globalShortcut } from 'electron';
+import { app, BrowserWindow, Menu, MenuItem, dialog, ipcMain } from 'electron';
 import path from 'path';
 import './ping.ts';
 
 const ENV_DEV = 'development';
 const KEY_F12 = 'F12';
+
+const menu = new Menu();
+menu.append(new MenuItem({ type: 'separator' }));
+menu.append(
+  new MenuItem({ label: 'Electron', type: 'checkbox', checked: true }),
+);
 
 function createWindow() {
   // 创建浏览器窗口
@@ -26,7 +32,9 @@ function createWindow() {
   }
 
   win.webContents.openDevTools();
-
+  win.on('close', () => {
+    dialog.showErrorBox('gfafasdf', '');
+  });
   return win;
 }
 
@@ -43,6 +51,22 @@ app.whenReady().then(() => {
     //   win.webContents.openDevTools();
     // });
   }
+});
+
+// app.on('browser-window-created', (event, win) => {
+//   win.webContents.on('context-menu', (e, params) => {
+//     menu.popup(win, params.x, params.y)
+//   })
+// })
+
+// ipcMain.on('show-context-menu', event => {
+//   const win = BrowserWindow.fromWebContents(event.sender);
+//   menu.popup(win);
+// });
+
+ipcMain.on('xxxx', (event, arg) => {
+  console.log(arg); // prints "ping"
+  event.returnValue = 'pong';
 });
 
 // Quit when all windows are closed.

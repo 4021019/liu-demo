@@ -14,18 +14,6 @@ module.exports = merge.smart(baseConfig, {
     main: './src/main/main.ts',
     preload: './src/main/preload.js',
   },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader',
-        query: {
-          configFileName: './tsconfig.json',
-        },
-        exclude: /node_modules/,
-      },
-    ],
-  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(envMode),

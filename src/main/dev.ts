@@ -1,5 +1,3 @@
-const { app, dialog, globalShortcut } = require('electron');
-
 // app.on('ready', () => {
 //   globalShortcut.register('F12', () => {
 //     dialog.showMessageBox({

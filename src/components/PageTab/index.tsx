@@ -1,5 +1,5 @@
 import SwitchEditor from '@/components/SwitchEditor';
-import { Tabs } from 'antd';
+import { Dropdown, Menu, Tabs } from 'antd';
 import { TabsProps } from 'antd/lib/tabs';
 import React, { ReactElement } from 'react';
 import { DndProvider, DragSource, DropTarget } from 'react-dnd';
@@ -13,6 +13,8 @@ import IProps, {
   TYPE,
   WrapTabNodeType,
 } from './type';
+import NativeMenu from '../NativeMenu';
+import { createItem } from '@/util/MenuUtil';
 
 const { TabPane } = Tabs;
 
@@ -153,6 +155,14 @@ class DraggableTabs extends React.Component<IDraggableTabProps> {
   }
 }
 
+const menu = (
+  <Menu>
+    <Menu.Item key="1">1st menu item</Menu.Item>
+    <Menu.Item key="2">2nd menu item</Menu.Item>
+    <Menu.Item key="3">3rd menu item</Menu.Item>
+  </Menu>
+);
+
 export default (props: IProps) => {
   const {
     order,
@@ -175,13 +185,29 @@ export default (props: IProps) => {
       {paneList.map(o => {
         return (
           <TabPane
-            tab={<div className="tabs-tab-title">{o.tab}</div>}
+            tab={
+              <NativeMenu
+                items={
+                  [
+                    // createItem({
+                    //   label: '关闭',
+                    //   click: () => {
+                    //     remove(o.key);
+                    //   },
+                    // }),
+                  ]
+                }
+                className="tabs-tab-title"
+              >
+                {o.tab}
+              </NativeMenu>
+            }
             closable={activeKey === o.key}
             key={o.key}
           >
             <SwitchEditor
               value={o.value}
-              updateContent={updateContent}
+              updateContent={updateContent ? updateContent : () => {}}
               dataKey={o.key}
               key={o.key}
               type={o.type}

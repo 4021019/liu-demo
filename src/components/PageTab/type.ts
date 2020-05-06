@@ -42,7 +42,9 @@ export interface IPane extends IUpdateContent {
   // 页面类型
   type: 'new' | 'markdown' | 'codemirror';
   // 页面文本
-  value: string;
+  value?: string;
+  // 创建日期
+  createDate?: string;
 }
 
 /**

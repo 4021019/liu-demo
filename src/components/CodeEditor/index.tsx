@@ -1,19 +1,19 @@
+import { createItem, createSepItem } from '@/util/MenuUtil';
+import { Layout } from 'antd';
 import * as cdm from 'codemirror';
-import './merge.less';
-import './codemirror.less';
-import './diff_match_patch.js';
 import 'codemirror/addon/merge/merge.js';
+import 'codemirror/mode/clike/clike.js';
 import 'codemirror/mode/javascript/javascript.js';
 import 'codemirror/mode/markdown/markdown.js';
-import 'codemirror/mode/clike/clike.js';
-import 'codemirror/theme/material.css';
 import 'codemirror/theme/idea.css';
-
+import 'codemirror/theme/material.css';
 import React, { createRef } from 'react';
-import { Button } from 'antd';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import { Layout, Menu, Breadcrumb, Switch, notification } from 'antd';
-import { SettingFilled } from '@ant-design/icons';
+import NativeMenu from '../NativeMenu';
+import './codemirror.less';
+import './diff_match_patch.js';
+import './merge.less';
+
 const { Header, Content, Footer } = Layout;
 
 interface IState {
@@ -34,6 +34,8 @@ interface IProps {
 
 export default class CodeEditor extends React.Component<IProps, IState> {
   private mergeRef: any;
+  private instance: any;
+
   private merge?: cdm.MergeView.MergeViewEditor;
   constructor(props: IProps) {
     super(props);
@@ -99,21 +101,60 @@ export default class CodeEditor extends React.Component<IProps, IState> {
     }
   };
 
+  saveValue = () => {
+    this.props.saveValue(this.state.value);
+  };
+
   render() {
     return (
       <div>
         {this.props.renderMerge ? (
-          <CodeMirror
-            onScroll={this.props.onScroll}
-            value={this.state.value}
-            options={this.state.optons}
-            onBeforeChange={(editor, data, value) => {
-              this.setState({ value });
-              this.props.saveValue(this.state.value);
-              this.merge ? this.merge.editor().setValue(value) : null;
-            }}
-            onChange={this.onChange}
-          />
+          <NativeMenu
+            items={[
+              createItem({
+                label: 'helloworld',
+                click: () => {
+                  alert('helloworld');
+                },
+              }),
+              createSepItem(),
+              createItem({
+                label: 'copy',
+                role: 'copy',
+                accelerator: 'CmdOrCtrl+c',
+              }),
+              createItem({
+                label: 'cut',
+                role: 'cut',
+                accelerator: 'CmdOrCtrl+x',
+              }),
+              createItem({
+                label: 'paste',
+                role: 'paste',
+                accelerator: 'CmdOrCtrl+v',
+              }),
+            ]}
+          >
+            <CodeMirror
+              editorDidMount={editor => {
+                this.instance = editor;
+              }}
+              onScroll={this.props.onScroll}
+              value={this.state.value}
+              options={this.state.optons}
+              onBlur={this.saveValue}
+              onKeyDown={(editor, e) => {
+                if (e.metaKey && e.keyCode === 81) {
+                  this.saveValue();
+                }
+              }}
+              onBeforeChange={(editor, data, value) => {
+                this.setState({ value });
+                this.merge ? this.merge.editor().setValue(value) : null;
+              }}
+              onChange={this.onChange}
+            />
+          </NativeMenu>
         ) : (
           <div ref={this.mergeRef} />
         )}

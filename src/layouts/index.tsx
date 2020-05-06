@@ -110,18 +110,6 @@ class MyLayout extends React.Component<any, any> {
                     <UserOutlined />
                     <span>侧边栏收回</span>
                   </Menu.Item>
-                  <SubMenu
-                    key="sub1"
-                    title={
-                      <span>
-                        <UserOutlined />
-                        <span>子菜单测试</span>
-                      </span>
-                    }
-                  >
-                    <Menu.Item key="sub1-1">Option 1</Menu.Item>
-                    <Menu.Item key="sub1-2">Option 2</Menu.Item>
-                  </SubMenu>
                   <Menu.Item
                     key="2"
                     onClick={() => {
@@ -138,16 +126,7 @@ class MyLayout extends React.Component<any, any> {
                     }}
                   >
                     <UserOutlined />
-                    <span>setting</span>
-                  </Menu.Item>
-                  <Menu.Item
-                    key="5"
-                    onClick={() => {
-                      history.push('/move');
-                    }}
-                  >
-                    <UserOutlined />
-                    <span>拖拽测试</span>
+                    <span>系统配置</span>
                   </Menu.Item>
                 </Menu>
               </Sider>

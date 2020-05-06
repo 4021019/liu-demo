@@ -8,7 +8,7 @@ interface PageProps {
   type: 'markdown' | 'codemirror' | 'new';
   value: string;
   dataKey: string;
-  updateContent?: (key: string, content: any) => void;
+  updateContent: (key: string, content: any) => void;
 }
 
 const gridStyle: React.CSSProperties = {
@@ -18,7 +18,7 @@ const gridStyle: React.CSSProperties = {
 
 export default (props: PageProps) => {
   const saveValue = (value: string): boolean => {
-    props.updateContent(props.dataKey, {
+    props?.updateContent(props.dataKey, {
       value: value,
     });
     // todo 增加返回值
@@ -46,7 +46,7 @@ export default (props: PageProps) => {
               <Card title={'test'}>
                 <div
                   onClick={() => {
-                    props.updateContent(props.dataKey, {
+                    props?.updateContent(props.dataKey, {
                       type: 'markdown',
                     });
                   }}
@@ -55,7 +55,7 @@ export default (props: PageProps) => {
                 </div>
                 <div
                   onClick={() => {
-                    props.updateContent(props.dataKey, {
+                    props?.updateContent(props.dataKey, {
                       type: 'codemirror',
                     });
                   }}
