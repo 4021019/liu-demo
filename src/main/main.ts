@@ -32,9 +32,9 @@ function createWindow() {
   }
 
   win.webContents.openDevTools();
-  win.on('close', () => {
-    dialog.showErrorBox('gfafasdf', '');
-  });
+  // win.on('close', () => {
+  //   dialog.showErrorBox('关闭确认', '');
+  // });
   return win;
 }
 
