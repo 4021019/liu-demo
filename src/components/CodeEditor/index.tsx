@@ -46,6 +46,7 @@ export default class CodeEditor extends React.Component<IProps, IState> {
         mode: this.props.mode,
         theme: this.props.theme,
         lineNumbers: true,
+        lineWrapping: true,
       },
     };
     this.mergeRef = createRef();
