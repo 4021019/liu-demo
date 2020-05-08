@@ -4,7 +4,6 @@ import { fs, mkdir, path } from '@/util/FileUtil';
 import _ from 'lodash';
 import 'nprogress/nprogress.css';
 import { IEditorModelType } from './type';
-import './style.less';
 
 const EditorModel: IEditorModelType = {
   namespace: 'editor',
