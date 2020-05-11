@@ -30,6 +30,7 @@ interface IProps {
   onScroll?: any;
   saveValue: (value: string) => boolean;
   changeValue?: (value: string) => void;
+  setInstance?: (editor: any) => void;
 }
 
 export default class CodeEditor extends React.Component<IProps, IState> {
@@ -137,9 +138,7 @@ export default class CodeEditor extends React.Component<IProps, IState> {
             ]}
           >
             <CodeMirror
-              editorDidMount={editor => {
-                this.instance = editor;
-              }}
+              editorDidMount={this.props.setInstance}
               onScroll={this.props.onScroll}
               value={this.state.value}
               options={this.state.optons}
