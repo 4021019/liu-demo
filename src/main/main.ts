@@ -1,4 +1,12 @@
-import { app, BrowserWindow, Menu, MenuItem, dialog, ipcMain } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  Menu,
+  MenuItem,
+  dialog,
+  ipcMain,
+  Tray,
+} from 'electron';
 import path from 'path';
 import './ping.ts';
 
@@ -10,6 +18,8 @@ menu.append(new MenuItem({ type: 'separator' }));
 menu.append(
   new MenuItem({ label: 'Electron', type: 'checkbox', checked: true }),
 );
+
+let appIcon = null;
 
 function createWindow() {
   // 创建浏览器窗口
@@ -25,10 +35,9 @@ function createWindow() {
   });
 
   if (process.env.NODE_ENV === ENV_DEV) {
-    win.loadURL('http://localhost:8000/#/');
+    win.loadURL('http://localhost:8000/#/editor');
   } else {
-    // 并且为你的应用加载index.html
-    win.loadFile('./dist/index.html');
+    win.loadFile('./public/index.html');
   }
 
   win.webContents.openDevTools();
@@ -44,6 +53,12 @@ function createWindow() {
 
 app.whenReady().then(() => {
   let win = createWindow();
+  if (process.env.NODE_ENV === ENV_DEV) {
+    appIcon = new Tray('./public/x.png');
+  } else {
+    // todo
+  }
+
   if (win && process.env.NODE_ENV === ENV_DEV) {
     // win.webContents.openDevTools();
     // globalShortcut.register(KEY_F12, () => {

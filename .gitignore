@@ -21,7 +21,5 @@
 /.env.local
 
 # electron
-/app/dist
-/app/node_modules
-/app/yarn.lock
+/app/**
 /target/**

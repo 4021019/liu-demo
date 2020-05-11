@@ -3,5 +3,6 @@ export default {
   dynamicImport: {},
   runtimePublicPath: true,
   publicPath: './',
-  outputPath: 'app/dist',
+  outputPath: 'app/public',
+  exportStatic: {},
 };
