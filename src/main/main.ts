@@ -5,8 +5,12 @@ import {
   MenuItem,
   dialog,
   ipcMain,
+  screen,
   Tray,
 } from 'electron';
+
+import { menubar } from 'menubar';
+
 import path from 'path';
 import './ping.ts';
 
@@ -18,8 +22,6 @@ menu.append(new MenuItem({ type: 'separator' }));
 menu.append(
   new MenuItem({ label: 'Electron', type: 'checkbox', checked: true }),
 );
-
-let appIcon = null;
 
 function createWindow() {
   // 创建浏览器窗口
@@ -54,7 +56,58 @@ function createWindow() {
 app.whenReady().then(() => {
   let win = createWindow();
   if (process.env.NODE_ENV === ENV_DEV) {
-    appIcon = new Tray('./public/x.png');
+    const appIcon = new Tray('./public/x.png');
+    const mb = menubar({
+      tray: appIcon,
+      index: 'http://localhost:8000/#/setting',
+      browserWindow: {
+        width: 480,
+        height: 680,
+        webPreferences: {
+          nodeIntegration: true,
+          preload: path.join(__dirname, 'preload.js'),
+        },
+      },
+    });
+    mb.on('ready', () => {
+      console.log('app is ready');
+      // your app code here
+    });
+
+    // appIcon.on('click', () => {
+    //   const {width, height} = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workAreaSize;
+    //   console.log(screen.getAllDisplays())
+    //   const [defaultWidth, defaultHeight] = [width, height].map(x => Math.round((x * 3) / 4));
+    //   const WINDOW_WIDTH = defaultWidth - 350;
+    //   const WINDOW_HEIGHT = defaultHeight;
+    //   const HORIZ_PADDING = 15;
+    //   const VERT_PADDING = 15;
+
+    //   const cursorPosition = screen.getCursorScreenPoint();
+    //   const primarySize = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workAreaSize;
+    //   const trayPositionVert = cursorPosition.y >= primarySize.height / 2 ? 'bottom' : 'top';
+    //   const trayPositionHoriz = cursorPosition.x >= primarySize.width / 2 ? 'right' : 'left';
+    //   win.setPosition(getTrayPosX(), getTrayPosY());
+    //   if (win.isVisible()) {
+    //     win.hide();
+    //   } else {
+    //     win.show();
+    //   }
+    //   // 计算位置
+    //   function getTrayPosX() {
+    //     const horizBounds = {
+    //       left: cursorPosition.x - (WINDOW_WIDTH / 2),
+    //       right: cursorPosition.x + (WINDOW_WIDTH / 2)
+    //     };
+    //     if (trayPositionHoriz === 'left') {
+    //       return horizBounds.left <= HORIZ_PADDING ? HORIZ_PADDING : horizBounds.left;
+    //     }
+    //     return horizBounds.right >= primarySize.width ? primarySize.width - HORIZ_PADDING - WINDOW_WIDTH : horizBounds.right - WINDOW_WIDTH;
+    //   }
+    //   function getTrayPosY() {
+    //     return trayPositionVert === 'bottom' ? cursorPosition.y - WINDOW_HEIGHT - VERT_PADDING : cursorPosition.y + VERT_PADDING;
+    //   }
+    // });
   } else {
     // todo
   }
