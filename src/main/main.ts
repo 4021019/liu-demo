@@ -1,16 +1,6 @@
-import {
-  app,
-  BrowserWindow,
-  Menu,
-  MenuItem,
-  dialog,
-  ipcMain,
-  screen,
-  Tray,
-} from 'electron';
-
+import { app, BrowserWindow, ipcMain, Menu, MenuItem, Tray } from 'electron';
+import knex, { CreateTableBuilder } from 'knex';
 import { menubar } from 'menubar';
-
 import path from 'path';
 import './ping.ts';
 
@@ -156,3 +146,52 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. 也可以拆分成几个文件，然后用 require 导入。
+
+var sqlite3 = require('sqlite3').verbose();
+// var db = new sqlite3.Database('./public/demo.db');
+// db.serialize(function() {
+//   db.run("CREATE TABLE if not exists lorem (info TEXT)");
+
+//   // var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
+//   // for (var i = 0; i < 10; i++) {
+//   //     stmt.run("Ipsum " + i);
+//   // }
+//   // stmt.finalize();
+
+// });
+// db.close();
+
+var knexClient = knex({
+  client: 'sqlite3',
+  connection: {
+    filename: './public/demo.db',
+  },
+});
+
+knexClient.schema.hasTable('users').then(o => {
+  console.log(o);
+});
+
+const who = (table: CreateTableBuilder) => {
+  table.timestamp('creation_date').defaultTo(knexClient.fn.now());
+  table.timestamp('last_update_date').defaultTo(knexClient.fn.now());
+  table.bigInteger('created_by').defaultTo(-1);
+  table.bigInteger('last_updated_by').defaultTo(-1);
+};
+
+knexClient.schema.hasTable('users').then(function(exists) {
+  if (!exists) {
+    return knexClient.schema.createTable('users', function(table) {
+      table.increments('id').primary();
+      table.string('name');
+      who(table);
+    });
+  }
+});
+
+knexClient
+  .select()
+  .from('lorem')
+  .then(o => {
+    console.log(o);
+  });

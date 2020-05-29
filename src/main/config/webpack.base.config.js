@@ -1,14 +1,23 @@
- 'use strict';
- 
- const path = require('path');
- const HTMLWebpackPlugin = require('html-webpack-plugin');
- const { CleanWebpackPlugin } = require('clean-webpack-plugin');
- const webpack = require('webpack');
+'use strict';
+
+const path = require('path');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   output: {
     path: path.resolve(__dirname, '../../../dist/main'),
     filename: '[name].js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
   },
   node: {
     __dirname: false,
@@ -18,7 +27,5 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', '.json'],
   },
   devtool: 'source-map',
-  plugins: [
-    new CleanWebpackPlugin()
-  ]
+  plugins: [new CleanWebpackPlugin()],
 };

@@ -14,6 +14,15 @@ module.exports = merge.smart(baseConfig, {
     main: './src/main/main.ts',
     preload: './src/main/preload.js',
   },
+  // module: {
+  //   rules: [
+  //     {
+  //       test: /\.ts$/,
+  //       use: 'ts-loader',
+  //       ex: /node_modules|pages|models|config|layouts|components/
+  //     }
+  //   ],
+  // },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(envMode),
